@@ -17,4 +17,7 @@ jobs:
           extract: true
           out-file-path: "./.tools"
       - run: echo "$PWD/.tools" >> $GITHUB_PATH
+      - run: echo $PATH
+      - run: ls -hal ./.tools
+      - run: chmod +x ./.tools/dprint
       - run: task lint
