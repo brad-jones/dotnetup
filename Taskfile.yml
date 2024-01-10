@@ -1,0 +1,60 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+# https://taskfile.dev
+version: "3"
+
+tasks:
+  onCreate:
+    desc: Connected to the devcontainer onCreateCommand hook
+    cmds:
+      - lefthook install -f
+      - git config pull.rebase true
+      - git config core.editor "code --wait"
+      - git config commit.template "$PWD/.gitmsgtpl"
+      - dotnet tool restore
+      - dotnet restore
+
+  fmt:
+    desc: Runs dprint & dotnet format in fix mode
+    cmds:
+      - dprint fmt
+      - dotnet format style -v d
+      - dotnet format analyzers -v d
+
+  lint:
+    desc: Runs dprint & dotnet format in check mode
+    cmds:
+      - dprint check
+      - dotnet format style -v d --verify-no-changes
+      - dotnet format analyzers -v d --verify-no-changes
+
+  run:
+    desc: Use me to quickly perform some manual exploratory testing / debugging.
+    cmd: DOTNET_ROOT="./tmp-dn-root" dotnet run -p ./src/dotnetup.csproj -- {{.CLI_ARGS}}
+
+  clean:
+    desc: Deletes all generated files
+    cmds:
+      - rm -rf ./bin ./**/bin ./**/obj
+      - dotnet restore
+
+  build:
+    desc: Builds both an AOT x64 & a Self-Contained arm64 binary for the current host os
+    deps:
+      - clean
+    cmds:
+      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/x64-aot -a x64 -p:PublishProfile=Aot
+      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/arm64-sc -a arm64 -p:PublishProfile=SelfContained
+      - rm ./bin/x64-aot/dotnetup.dbg ./bin/arm64-sc/dotnetup.pdb
+      - gzip -k ./bin/x64-aot/dotnetup
+      - gzip -k ./bin/arm64-sc/dotnetup
+      - ls -hal ./bin/x64-aot ./bin/arm64-sc
+
+  test:
+    deps:
+      - build
+    cmd: dotnet test ./test
+
+  publish:
+    deps:
+      - test
+    cmd: echo "TODO"

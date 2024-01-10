@@ -1,0 +1,34 @@
+// For format details, see https://aka.ms/devcontainer.json
+{
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/dotnet:2": {
+      "additionalVersions": "7.0"
+    },
+    "ghcr.io/devcontainers-contrib/features/go-task:1": {},
+    "ghcr.io/devcontainers-contrib/features/shfmt:1": {},
+    "./features/lefthook": {},
+    "./features/cocogitto": {},
+    "./features/dprint": {}
+  },
+  "initializeCommand": [".devcontainer/hooks/init"],
+  "postStartCommand": [".devcontainer/hooks/postStart"],
+  "onCreateCommand": "task onCreate",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "dev.containers.copyGitConfig": false
+      },
+      "extensions": [
+        "csharpier.csharpier-vscode",
+        "dprint.dprint",
+        "EditorConfig.EditorConfig",
+        "github.vscode-github-actions",
+        "ms-dotnettools.csdevkit",
+        "redhat.vscode-yaml",
+        "task.vscode-task",
+        "Tyriar.sort-lines"
+      ]
+    }
+  }
+}

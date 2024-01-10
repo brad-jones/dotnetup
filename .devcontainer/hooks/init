@@ -1,0 +1,15 @@
+#!/usr/bin/bash
+set -euo pipefail
+
+# Check if the script is running on GitHub Codespaces
+if [[ -n "${CODESPACES:-}" || -n "${GITHUB_CODESPACE_TOKEN:-}" ]]; then
+  printf "Running in GitHub Codespaces."
+  if [[ -n "${GITHUB_CODESPACE_TOKEN:-}" ]]; then
+    echo "Running in GitHub Codespaces with GITHUB_CODESPACE_TOKEN."
+  else
+    echo "Running in GitHub Codespaces without GITHUB_CODESPACE_TOKEN."
+  fi
+else
+  echo "Running on Linux or macOS host"
+  git config --get-regexp ^user.*$ > .git/user.conf
+fi

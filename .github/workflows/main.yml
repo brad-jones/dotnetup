@@ -1,0 +1,19 @@
+on: { push: { branches: [master] } }
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arduino/setup-task@v1
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: ./global.json
+      - uses: robinraju/release-downloader@v1.8
+        with:
+          repository: "dprint/dprint"
+          fileName: "dprint-x86_64-unknown-linux-gnu.zip"
+          tag: "0.45.0"
+          extract: true
+          out-file-path: "./.tools"
+      - run: task lint
