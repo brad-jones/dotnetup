@@ -16,4 +16,5 @@ jobs:
           tag: "0.45.0"
           extract: true
           out-file-path: "./.tools"
+      - run: echo "$PWD/.tools" >> $GITHUB_PATH
       - run: task lint
