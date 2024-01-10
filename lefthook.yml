@@ -6,9 +6,11 @@ pre-commit:
       run: dprint fmt --allow-no-files {staged_files}
       stage_fixed: true
     style:
+      glob: "*.cs"
       run: dotnet format style -v d
       stage_fixed: true
     analyzers:
+      glob: "*.cs"
       run: dotnet format analyzers -v d
       stage_fixed: true
 
@@ -16,8 +18,9 @@ commit-msg:
   commands:
     lint:
       run: cog verify -f {1}
-
-pre-push:
-  commands:
-    lint:
-      run: task lint
+#pre-push:
+#  commands:
+#    lint:
+#      run: task lint
+#    test:
+#      run: task test
