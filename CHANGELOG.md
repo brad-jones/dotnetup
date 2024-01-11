@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.1.3](https://github.com/brad-jones/dotnetup/compare/v0.1.2..v0.1.3) - 2024-01-11
+#### Bug Fixes
+- **(pixi)** publish conda packages to prefix.dev - ([5c0b4cc](https://github.com/brad-jones/dotnetup/commit/5c0b4cc6cbdd2fd55e399201ab09e873f6d3fa6b)) - [@brad-jones](https://github.com/brad-jones)
+#### Continuous Integration
+- **(cog)** next version logic is broken - ([d29588e](https://github.com/brad-jones/dotnetup/commit/d29588ed8d3136b9fba814d972097247cfcf8bfd)) - [@brad-jones](https://github.com/brad-jones)
+- **(publish)** split package & publish into 2 steps - ([119bd21](https://github.com/brad-jones/dotnetup/commit/119bd21e01f846617336e91d90151490dcf65661)) - [@brad-jones](https://github.com/brad-jones)
+- **(publish)** go-task was caching the dynamic HASH var - ([0299bb9](https://github.com/brad-jones/dotnetup/commit/0299bb9f69218200009b638f53f6dd88837d4251)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.1.2](https://github.com/brad-jones/dotnetup/compare/v0.1.1..v0.1.2) - 2024-01-11
 #### Bug Fixes
 - **(publish)** remove publish dir from checksums file - ([919a646](https://github.com/brad-jones/dotnetup/commit/919a64626dc3d505725dde82b376582a29d2b558)) - [@brad-jones](https://github.com/brad-jones)
