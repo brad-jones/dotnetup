@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.1.4](https://github.com/brad-jones/dotnetup/compare/v0.1.3..v0.1.4) - 2024-01-11
+#### Bug Fixes
+- **(package)** logic error in optional chmod - ([da95773](https://github.com/brad-jones/dotnetup/commit/da9577356eba4e81c707eb0caaa12af10dc42487)) - [@brad-jones](https://github.com/brad-jones)
+- **(publish)** minor changes to logging - ([b89de93](https://github.com/brad-jones/dotnetup/commit/b89de93e3b799888c87b378b9f0de262fa4659e6)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.1.3](https://github.com/brad-jones/dotnetup/compare/v0.1.2..v0.1.3) - 2024-01-11
 #### Bug Fixes
 - **(pixi)** publish conda packages to prefix.dev - ([5c0b4cc](https://github.com/brad-jones/dotnetup/commit/5c0b4cc6cbdd2fd55e399201ab09e873f6d3fa6b)) - [@brad-jones](https://github.com/brad-jones)
