@@ -50,6 +50,12 @@ jobs:
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
+          name: ${{ matrix.os }}-x64-sc
+          path: bin/x64-sc/*
+          compression-level: 0
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
           name: ${{ matrix.os }}-arm64-sc
           path: bin/arm64-sc/*
           compression-level: 0
