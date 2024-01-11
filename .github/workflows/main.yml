@@ -3,8 +3,16 @@ on: { push: { branches: [master] } }
 jobs:
   devcontainer:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     steps:
       - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - uses: devcontainers/ci@v0.3
         with:
           imageName: ghcr.io/brad-jones/dotnetup/devcontainer
