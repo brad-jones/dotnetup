@@ -15,7 +15,7 @@ runs:
         repo: mvdan/sh
         tag: v3.7.0
         extension-matching: disable
-        rename-to: shfmt
+        rename-to: ${{ runner.os == 'Windows' && 'shfmt.exe' || 'shfmt' }}
         chmod: 0755
 
     - name: Setup dprint
