@@ -4,6 +4,7 @@ jobs:
   devcontainer:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: devcontainers/ci@v0.3
         with:
           imageName: ghcr.io/brad-jones/dotnetup/devcontainer
@@ -11,12 +12,14 @@ jobs:
           push: always
 
   lint:
+    needs: [devcontainer]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - uses: devcontainers/ci@v0.3
         with:
-          push: never
           cacheFrom: ghcr.io/brad-jones/dotnetup/devcontainer
+          push: never
           runCmd: task lint
 
   #lint:
