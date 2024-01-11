@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: ./global.json
-      - run: dotnet tools restore
+      - run: dotnet tool restore
       - uses: robinraju/release-downloader@v1.8
         with:
           repository: "dprint/dprint"
