@@ -11,7 +11,22 @@ jobs:
         with:
           repo: go-task/task
           tag: v3.33.1
+      - uses: jaxxstorm/action-install-gh-release@v1.10.0
+        with:
+          repo: mvdan/sh
+          tag: v3.7.0
+      - uses: jaxxstorm/action-install-gh-release@v1.10.0
+        with:
+          repo: dprint/dprint
+          tag: 0.45.0
+      - uses: jaxxstorm/action-install-gh-release@v1.10.0
+        with:
+          repo: cocogitto/cocogitto
+          tag: 6.0.1
       - run: task -l
+      - run: shfmt --help
+      - run: dprint --help
+      - run: cog --help
 
       #- uses: actions/setup-dotnet@v4
       #  with:
