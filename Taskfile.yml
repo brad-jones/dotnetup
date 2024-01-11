@@ -65,12 +65,12 @@ tasks:
       - task: gzip-bins
       - task: stage-gzipped-bins
       - task: generate-digests
-      - { task: pixi-package, vars: { RID: linux-x64-aot, PIXIOS: linux, PIXIARCH: 64 } }
-      - { task: pixi-package, vars: { RID: linux-arm64-sc, PIXIOS: linux, PIXIARCH: aarch64 } }
-      - { task: pixi-package, vars: { RID: darwin-x64-aot, PIXIOS: osx, PIXIARCH: 64 } }
-      - { task: pixi-package, vars: { RID: darwin-arm64-sc, PIXIOS: osx, PIXIARCH: arm64 } }
-      - { task: pixi-package, vars: { RID: windows-x64-aot, PIXIOS: win, PIXIARCH: 64 } }
-      - { task: pixi-package, vars: { RID: windows-arm64-sc, PIXIOS: win, PIXIARCH: arm64 } }
+      - { task: pixi-package, vars: { RID: linux-x64-aot, PIXIOS: linux, PIXIARCH: 64, EXE: "" } }
+      - { task: pixi-package, vars: { RID: linux-arm64-sc, PIXIOS: linux, PIXIARCH: aarch64, EXE: "" } }
+      - { task: pixi-package, vars: { RID: darwin-x64-aot, PIXIOS: osx, PIXIARCH: 64, EXE: "" } }
+      - { task: pixi-package, vars: { RID: darwin-arm64-sc, PIXIOS: osx, PIXIARCH: arm64, EXE: "" } }
+      - { task: pixi-package, vars: { RID: windows-x64-aot, PIXIOS: win, PIXIARCH: 64, EXE: ".exe" } }
+      - { task: pixi-package, vars: { RID: windows-arm64-sc, PIXIOS: win, PIXIARCH: arm64, EXE: ".exe" } }
 
   gzip-bins:
     cmds:
@@ -101,14 +101,15 @@ tasks:
     cmd: sha256sum * > dotnetup-checksums.txt
 
   pixi-package:
+    silent: false
     vars:
       BUILD_NUM: 0
       HASH:
-        sh: tr -dc A-Za-z0-9 </dev/urandom | head -c 8; echo
+        sh: echo "{{ .RID }}" >/dev/null && tr -dc A-Za-z0-9 </dev/urandom | head -c 8; echo
       PATH_SHA256:
-        sh: sha256sum -b ./bin/{{ .RID }}/dotnetup{{exeExt}} | awk '{ print $1 }'
+        sh: sha256sum -b ./bin/{{ .RID }}/dotnetup{{ .EXE }} | awk '{ print $1 }'
       PATH_SIZE:
-        sh: stat --printf="%s" ./bin/{{ .RID }}/dotnetup{{exeExt}}
+        sh: stat --printf="%s" ./bin/{{ .RID }}/dotnetup{{ .EXE }}
       PKG_FILE_NAME: dotnetup-{{ .VERSION }}-{{ .HASH }}_{{ .BUILD_NUM }}.tar.bz2
       INDEX_JSON: |
         {
@@ -147,7 +148,7 @@ tasks:
           "paths_version": 1,
           "paths": [
             {
-              "_path": "bin/dotnetup{{exeExt}}",
+              "_path": "bin/dotnetup{{ .EXE }}",
               "path_type": "hardlink",
               "sha256": "{{ .PATH_SHA256 }}",
               "size_in_bytes": {{ .PATH_SIZE }}
@@ -163,7 +164,7 @@ tasks:
       - echo '{{ .ABOUT_JSON }}' > ./pixi/{{ .RID }}/info/about.json
       - echo '{{ .PATHS_JSON }}' > ./pixi/{{ .RID }}/info/paths.json
       - echo '{{ .ENV_VARS_JSON }}' > ./pixi/{{ .RID }}/etc/conda/env_vars.d/dotnetup.json
-      - cp ./bin/{{ .RID }}/dotnetup{{exeExt}} ./pixi/{{ .RID }}/bin/
+      - cp ./bin/{{ .RID }}/dotnetup{{ .EXE }} ./pixi/{{ .RID }}/bin/
       - cmd: chmod +x ./pixi/{{ .RID }}/bin/dotnetup
         platforms: [linux, darwin]
       # see: https://stackoverflow.com/a/39530409
