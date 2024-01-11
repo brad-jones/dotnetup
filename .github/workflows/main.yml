@@ -22,13 +22,10 @@ jobs:
   lint:
     needs: [devcontainer]
     runs-on: ubuntu-latest
+    container: ghcr.io/brad-jones/dotnetup/devcontainer
     steps:
       - uses: actions/checkout@v4
-      - uses: devcontainers/ci@v0.3
-        with:
-          cacheFrom: ghcr.io/brad-jones/dotnetup/devcontainer
-          push: never
-          runCmd: task lint
+      - run: task lint
 
   #lint:
   #  runs-on: ubuntu-latest
