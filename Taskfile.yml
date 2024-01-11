@@ -21,8 +21,9 @@ tasks:
       - dotnet format analyzers -v d
 
   lint:
-    desc: Runs dprint & dotnet format in check mode
+    desc: Runs cog, dprint & dotnet format in check mode
     cmds:
+      - cog check
       - dprint check
       - dotnet format style -v d --verify-no-changes
       - dotnet format analyzers -v d --verify-no-changes
