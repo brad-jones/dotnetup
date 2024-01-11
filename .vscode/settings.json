@@ -15,5 +15,8 @@
     // another unrelated tool called cog that evenBetterToml discovers which
     // causes all sorts of havoc.
     "cog.toml": "https://json.schemastore.org/base.json"
+  },
+  "emojisense.languages": {
+    "csharp": true
   }
 }

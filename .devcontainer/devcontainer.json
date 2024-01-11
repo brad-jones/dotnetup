@@ -20,6 +20,8 @@
         "dev.containers.copyGitConfig": false
       },
       "extensions": [
+        "bierner.emojisense",
+        "bierner.markdown-emoji",
         "csharpier.csharpier-vscode",
         "dprint.dprint",
         "eamodio.gitlens",

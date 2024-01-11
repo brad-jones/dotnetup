@@ -32,12 +32,19 @@ tasks:
 
   run:
     desc: Use me to quickly perform some manual exploratory testing / debugging.
-    cmd: DOTNET_ROOT="./tmp-dn-root" dotnet run -p ./src/dotnetup.csproj -- {{.CLI_ARGS}}
+    cmd: DOTNET_ROOT="./tmp-dn-root" dotnet run --project ./src/dotnetup.csproj -- {{.CLI_ARGS}}
+
+  runAot:
+    desc: Use me to less quickly perform some manual exploratory testing / debugging against the aot build.
+    cmds:
+      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin -p:PublishProfile=Aot
+      - ls -hal ./bin/dotnetup{{exeExt}}
+      - DOTNET_ROOT="./tmp-dn-root" ./bin/dotnetup{{exeExt}} {{.CLI_ARGS}}
 
   clean:
     desc: Deletes all generated files
     cmds:
-      - rm -rf ./bin ./**/bin ./**/obj ./publish ./pixi
+      - rm -rf ./bin ./**/bin ./**/obj ./publish ./pixi ./tmp-dn-root
       - dotnet restore
 
   build:

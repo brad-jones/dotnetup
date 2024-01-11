@@ -2,6 +2,8 @@ using System.Net.Http.Json;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using dotnetup.Services.Releases.DTOs;
+using Semver;
+using Shell = Medallion.Shell.Command;
 
 namespace dotnetup.Services.Releases;
 
@@ -19,36 +21,95 @@ public class ReleasesClient
     public static Task<ReleaseNotes?> GetReleaseNotes(int v, CancellationToken cancel = default) =>
         Client.GetFromJsonAsync(ReleaseNotesUrl(v), SrcGenCtx.Default.ReleaseNotes, cancel);
 
-    public static async Task<string> GetLatestVersion(CancellationToken cancel = default)
+    public static async Task<SemVersion> GetLatestVersion(CancellationToken cancel = default)
     {
         var notes = await GetReleaseNotes(MajorVersions[0], cancel);
-        return notes?.Releases.FirstOrDefault()?.Sdk.Version ?? "0.0.0";
+        return SemVersion.Parse(notes?.Releases.FirstOrDefault()?.Sdk.Version ?? "0.0.0", SemVersionStyles.Any);
     }
 
-    public static async Task<ReleaseNoteSdkFile> GetVersion(string version, CancellationToken cancel = default)
+    public static async Task<Tuple<string, ReleaseNoteSdkFile>> GetVersion(
+        SemVersion version,
+        CancellationToken cancel = default
+    )
     {
-        var majorVersion = int.Parse(version[..1]);
-        var notes = await GetReleaseNotes(majorVersion, cancel);
-        var release = notes!.Releases.Single(_ => _.Sdk.Version == version).Sdk;
-        return release.Files.Single(_ => _.Rid == RuntimeInformation.RuntimeIdentifier && _.Name.EndsWith(FileExt));
-    }
+        var notes = await GetReleaseNotes(version.Major, cancel);
 
-    public static async Task<string> DownloadVersion(string version, CancellationToken cancel = default)
-    {
-        var download = await GetVersion(version, cancel);
-        var filePath = Path.Combine(Path.GetTempPath(), $"dotnetup-{Guid.NewGuid()}.{FileExt}");
-        using (var file = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+        ReleaseNoteSdk? release = null;
+        if (version.Minor == 0 && version.Patch == 0)
         {
-            await Client.DownloadDataAsync(download.Url, file, cancel);
+            release = notes!.Releases.First().Sdk;
+        }
+        else
+        {
+            release = notes!
+                .Releases.Single(_ => SemVersion.Parse(_.Sdk.Version, SemVersionStyles.Any).Equals(version))
+                .Sdk;
         }
 
-        if (!string.Equals(GetDigest(filePath), download.Hash, StringComparison.InvariantCultureIgnoreCase))
+        return Tuple.Create(
+            release.Version,
+            release.Files.Single(_ => _.Rid == RuntimeInformation.RuntimeIdentifier && _.Name.EndsWith(FileExt))
+        );
+    }
+
+    public static async Task<Tuple<string, string>> DownloadVersion(
+        SemVersion version,
+        string dotnetExe,
+        CancellationToken cancel = default
+    )
+    {
+        Console.Write($"▶️  looking up release notes for {version}...  ");
+        var (resolvedVersion, download) = await GetVersion(version, cancel);
+        if (!version.Equals(SemVersion.Parse(resolvedVersion, SemVersionStyles.Any)))
         {
+            if (File.Exists(dotnetExe))
+            {
+                var r = await Shell.Run(dotnetExe, ["--info"]).Task;
+                var sdkString = $"{resolvedVersion} [{Path.Join(Path.GetDirectoryName(dotnetExe), "sdk")}]";
+                if (r.ExitCode == 0 && r.StandardOutput.Contains(sdkString))
+                {
+                    Console.WriteLine($"resolved({resolvedVersion}) - already installed ✔️");
+                    return Tuple.Create(resolvedVersion, string.Empty);
+                }
+            }
+
+            Console.WriteLine($"resolved({resolvedVersion}) ✔️");
+        }
+        else
+        {
+            Console.WriteLine($"DONE ✔️");
+        }
+
+        var filePath = Path.Combine(Path.GetTempPath(), $"dotnetup-{Guid.NewGuid()}{FileExt}");
+        Console.WriteLine($"💾 saving archive to tmp location: {filePath}");
+
+        try
+        {
+            using (var file = new FileStream(filePath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                await Client.DownloadDataAsync(download.Url, file, cancel);
+            }
+
+            Console.Write($"▶️  validating download against sha512:{download.Hash}...  ");
+            if (!string.Equals(GetDigest(filePath), download.Hash, StringComparison.InvariantCultureIgnoreCase))
+            {
+                Console.Error.WriteLine($"❗❗❗  oh no hash mismatch  ❗❗❗");
+                Console.Write($"▶️  cleaning up {filePath}... ");
+                File.Delete(filePath);
+                Console.WriteLine("DONE ✔️");
+                Environment.Exit(1);
+            }
+            Console.WriteLine($"DONE ✔️");
+
+            return Tuple.Create(resolvedVersion, filePath);
+        }
+        catch
+        {
+            Console.Write($"▶️  cleaning up {filePath}... ");
             File.Delete(filePath);
-            throw new Exception("downloaded archive does not match digest");
+            Console.WriteLine("DONE ✔️");
+            throw;
         }
-
-        return filePath;
     }
 
     private static string GetDigest(string file)
