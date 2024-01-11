@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.1.2](https://github.com/brad-jones/dotnetup/compare/v0.1.1..v0.1.2) - 2024-01-11
+#### Bug Fixes
+- **(publish)** remove publish dir from checksums file - ([919a646](https://github.com/brad-jones/dotnetup/commit/919a64626dc3d505725dde82b376582a29d2b558)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.1.1](https://github.com/brad-jones/dotnetup/compare/v0.1.0..v0.1.1) - 2024-01-11
 #### Bug Fixes
 - **(arm64)** forgot to publish arm64 binaries - ([d47a533](https://github.com/brad-jones/dotnetup/commit/d47a533262c3b97d50a371e15046de0db76df71e)) - [@brad-jones](https://github.com/brad-jones)
