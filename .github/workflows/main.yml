@@ -39,8 +39,8 @@ jobs:
           extract: true
           out-file-path: "./.tools"
       - run: |
-          ls -R ./.tools
           mv ./.tools/shfmt_*_linux_amd64 ./.tools/shfmt
+          mv ./.tools/x86_64-unknown-linux-musl/cog ./.tools/cog
           chmod +x ./.tools/cog
           chmod +x ./.tools/task
           chmod +x ./.tools/dprint
@@ -79,6 +79,7 @@ jobs:
           extract: true
           out-file-path: "./.tools"
       - run: |
+          mv ./.tools/x86_64-unknown-linux-musl/cog ./.tools/cog
           chmod +x ./.tools/cog
           chmod +x ./.tools/task
           echo "$PWD/.tools" >> $GITHUB_PATH
@@ -120,6 +121,7 @@ jobs:
           extract: true
           out-file-path: "./.tools"
       - run: |
+          mv ./.tools/x86_64-unknown-linux-musl/cog ./.tools/cog
           chmod +x ./.tools/cog
           echo "$PWD/.tools" >> $GITHUB_PATH
       - run: cog bump --auto
