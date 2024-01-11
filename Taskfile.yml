@@ -141,15 +141,6 @@ tasks:
           "summary": "dotnet sdk version manager (ala: rustup)",
           "description": {{ toJson .DESCRIPTION_TXT }}
         }
-      ENV_VARS_JSON: |
-        {
-          "DOTNET_ROOT":"${CONDA_PREFIX}/lib/dotnet",
-          "DOTNET_TOOLS":"${DOTNET_ROOT}/lib/dotnet/tools",
-          "DOTNET_TOOLS_PATH":"${DOTNET_TOOLS}",
-          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH":"false",
-          "DOTNET_CLI_TELEMETRY_OPTOUT":"true",
-          "PATH":"${DOTNET_ROOT}:${DOTNET_TOOLS_PATH}:${PATH}"
-        }
       PATHS_JSON: |
         {
           "paths_version": 1,
@@ -159,6 +150,12 @@ tasks:
               "path_type": "hardlink",
               "sha256": "{{ .PATH_SHA256 }}",
               "size_in_bytes": {{ .PATH_SIZE }}
+            },
+            {
+              "_path": "etc/conda/env_vars.d/dotnetup.json",
+              "path_type": "hardlink",
+              "sha256": "abef8a425fbf74d1a7c2f6fbc00e8458b01f19a644f7e95f73ff0a39f4e65662",
+              "size_in_bytes": 289
             }
           ]
         }
@@ -171,7 +168,7 @@ tasks:
       - echo '{{ .INDEX_JSON }}' > ./pixi/{{ .RID }}/info/index.json
       - echo '{{ .ABOUT_JSON }}' > ./pixi/{{ .RID }}/info/about.json
       - echo '{{ .PATHS_JSON }}' > ./pixi/{{ .RID }}/info/paths.json
-      - echo '{{ .ENV_VARS_JSON }}' > ./pixi/{{ .RID }}/etc/conda/env_vars.d/dotnetup.json
+      - cp ./pixi_env_vars.json ./pixi/{{ .RID }}/etc/conda/env_vars.d/dotnetup.json
       - cp ./bin/{{ .RID }}/dotnetup{{ .EXE }} ./pixi/{{ .RID }}/bin/
       - '[ -f "./pixi/{{ .RID }}/bin/dotnetup" ] && chmod +x ./pixi/{{ .RID }}/bin/dotnetup || true'
       # see: https://stackoverflow.com/a/39530409
