@@ -1,5 +1,8 @@
-# Created by https://www.toptal.com/developers/gitignore/api/linux,macos,windows,visualstudiocode,dotnetcore
-# Edit at https://www.toptal.com/developers/gitignore?templates=linux,macos,windows,visualstudiocode,dotnetcore
+# Created by https://www.toptal.com/developers/gitignore/api/linux,macos,windows,dotnetcore,visualstudiocode,dotenv
+# Edit at https://www.toptal.com/developers/gitignore?templates=linux,macos,windows,dotnetcore,visualstudiocode,dotenv
+
+### dotenv ###
+.env
 
 ### DotnetCore ###
 # .NET Core build folders
@@ -103,6 +106,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/linux,macos,windows,visualstudiocode,dotnetcore
+# End of https://www.toptal.com/developers/gitignore/api/linux,macos,windows,dotnetcore,visualstudiocode,dotenv
 
 publish/
+pixi/

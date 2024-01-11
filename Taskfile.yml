@@ -2,6 +2,8 @@
 # https://taskfile.dev
 version: "3"
 
+dotenv: [".env"]
+
 tasks:
   onCreate:
     desc: Connected to the devcontainer onCreateCommand hook
@@ -35,14 +37,14 @@ tasks:
   clean:
     desc: Deletes all generated files
     cmds:
-      - rm -rf ./bin ./**/bin ./**/obj
+      - rm -rf ./bin ./**/bin ./**/obj ./publish ./pixi
       - dotnet restore
 
   build:
     desc: Builds both an AOT & Self-Contained binaries for the current host os
     vars:
       NEXT_VERSION:
-        sh: cog bump -d -a | sed '1s/^.//' || echo "0.0.0"
+        sh: cog bump -d -a || echo "v0.0.0" | sed '1s/^.//'
     cmds:
       - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/x64-aot -a x64 -p:PublishProfile=Aot -p:Version={{.NEXT_VERSION}}
       - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/x64-sc -a x64 -p:PublishProfile=SelfContained -p:Version={{.NEXT_VERSION}}
@@ -63,6 +65,12 @@ tasks:
       - task: gzip-bins
       - task: stage-gzipped-bins
       - task: generate-digests
+      - { task: pixi-package, vars: { RID: linux-x64-aot, PIXIOS: linux, PIXIARCH: 64 } }
+      - { task: pixi-package, vars: { RID: linux-arm64-sc, PIXIOS: linux, PIXIARCH: aarch64 } }
+      - { task: pixi-package, vars: { RID: darwin-x64-aot, PIXIOS: osx, PIXIARCH: 64 } }
+      - { task: pixi-package, vars: { RID: darwin-arm64-sc, PIXIOS: osx, PIXIARCH: arm64 } }
+      - { task: pixi-package, vars: { RID: windows-x64-aot, PIXIOS: win, PIXIARCH: 64 } }
+      - { task: pixi-package, vars: { RID: windows-arm64-sc, PIXIOS: win, PIXIARCH: arm64 } }
 
   gzip-bins:
     cmds:
@@ -91,3 +99,82 @@ tasks:
   generate-digests:
     dir: ./publish
     cmd: sha256sum * > dotnetup-checksums.txt
+
+  pixi-package:
+    vars:
+      BUILD_NUM: 0
+      HASH:
+        sh: tr -dc A-Za-z0-9 </dev/urandom | head -c 8; echo
+      PATH_SHA256:
+        sh: sha256sum -b ./bin/{{ .RID }}/dotnetup{{exeExt}} | awk '{ print $1 }'
+      PATH_SIZE:
+        sh: stat --printf="%s" ./bin/{{ .RID }}/dotnetup{{exeExt}}
+      PKG_FILE_NAME: dotnetup-{{ .VERSION }}-{{ .HASH }}_{{ .BUILD_NUM }}.tar.bz2
+      INDEX_JSON: |
+        {
+          "name": "dotnetup",
+          "version": "{{ .VERSION }}",
+          "build": "{{ .HASH }}_{{ .BUILD_NUM }}",
+          "build_number": {{ .BUILD_NUM }},
+          "platform": "{{ .PIXIOS }}",
+          "arch": "{{ .PIXIARCH }}",
+          "subdir": "{{ .PIXIOS }}-{{ .PIXIARCH }}",
+          "timestamp": {{ now | unixEpoch }}
+        }
+      DESCRIPTION_TXT:
+        sh: cat ./CHANGELOG.md
+      ABOUT_JSON: |
+        {
+          "home": "https://github.com/brad-jones/dotnetup",
+          "dev_url": "https://github.com/brad-jones/dotnetup",
+          "doc_url": "https://github.com/brad-jones/dotnetup",
+          "license_url": "https://github.com/brad-jones/dotnetup/blob/master/LICENSE",
+          "license": "MIT",
+          "summary": "dotnet sdk version manager (ala: rustup)",
+          "description": {{ toJson .DESCRIPTION_TXT }}
+        }
+      ENV_VARS_JSON: |
+        {
+          "DOTNET_ROOT":"${CONDA_PREFIX}/lib/dotnet",
+          "DOTNET_TOOLS":"${DOTNET_ROOT}/lib/dotnet/tools",
+          "DOTNET_TOOLS_PATH":"${DOTNET_TOOLS}",
+          "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH":"false",
+          "DOTNET_CLI_TELEMETRY_OPTOUT":"true",
+          "PATH":"${DOTNET_ROOT}:${DOTNET_TOOLS_PATH}:${PATH}"
+        }
+      PATHS_JSON: |
+        {
+          "paths_version": 1,
+          "paths": [
+            {
+              "_path": "bin/dotnetup{{exeExt}}",
+              "path_type": "hardlink",
+              "sha256": "{{ .PATH_SHA256 }}",
+              "size_in_bytes": {{ .PATH_SIZE }}
+            }
+          ]
+        }
+    cmds:
+      - mkdir -p ./pixi/{{ .RID }}
+      - mkdir -p ./pixi/{{ .RID }}/bin
+      - mkdir -p ./pixi/{{ .RID }}/info
+      - mkdir -p ./pixi/{{ .RID }}/etc/conda/env_vars.d
+      - echo '{{ .INDEX_JSON }}' > ./pixi/{{ .RID }}/info/index.json
+      - echo '{{ .ABOUT_JSON }}' > ./pixi/{{ .RID }}/info/about.json
+      - echo '{{ .PATHS_JSON }}' > ./pixi/{{ .RID }}/info/paths.json
+      - echo '{{ .ENV_VARS_JSON }}' > ./pixi/{{ .RID }}/etc/conda/env_vars.d/dotnetup.json
+      - cp ./bin/{{ .RID }}/dotnetup{{exeExt}} ./pixi/{{ .RID }}/bin/
+      - cmd: chmod +x ./pixi/{{ .RID }}/bin/dotnetup
+        platforms: [linux, darwin]
+      # see: https://stackoverflow.com/a/39530409
+      - |
+        find ./pixi/{{ .RID }}/ -printf "%P\n" | \
+        tar -cjf ./pixi/{{ .PKG_FILE_NAME }} --no-recursion -C ./pixi/{{ .RID }}/ -T -
+      - |
+        curl \
+          --data-binary @./pixi/{{ .PKG_FILE_NAME }} \
+          -H "Authorization: Bearer {{ .PREFIX_DEV_TOKEN }}" \
+          -H "X-File-Name: {{ .PKG_FILE_NAME }}" \
+          -H "X-File-SHA256: $(sha256sum -b ./pixi/{{ .PKG_FILE_NAME }} | awk '{ print $1 }')" \
+          -H "Content-Type: application/octet-stream" \
+          https://prefix.dev/api/v1/upload/brads-forge

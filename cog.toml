@@ -17,7 +17,7 @@ pre_bump_hooks = [
   "git config --global user.email github-actions[bot]@users.noreply.github.com",
 
   # Run the publish task to generate all the final artifacts
-  "task publish",
+  "task publish VERSION={{version}}",
 ]
 
 # Publish artifacts, push up the changelogs & tags
