@@ -22,6 +22,7 @@
       "extensions": [
         "csharpier.csharpier-vscode",
         "dprint.dprint",
+        "eamodio.gitlens",
         "EditorConfig.EditorConfig",
         "github.vscode-github-actions",
         "ms-dotnettools.csdevkit",
