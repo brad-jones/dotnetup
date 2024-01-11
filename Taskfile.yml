@@ -173,7 +173,7 @@ tasks:
       - echo '{{ .PATHS_JSON }}' > ./pixi/{{ .RID }}/info/paths.json
       - echo '{{ .ENV_VARS_JSON }}' > ./pixi/{{ .RID }}/etc/conda/env_vars.d/dotnetup.json
       - cp ./bin/{{ .RID }}/dotnetup{{ .EXE }} ./pixi/{{ .RID }}/bin/
-      - '[ -f "./pixi/{{ .RID }}/bin/dotnetup" ] && chmod +x ./pixi/{{ .RID }}/bin/dotnetup'
+      - '[ -f "./pixi/{{ .RID }}/bin/dotnetup" ] && chmod +x ./pixi/{{ .RID }}/bin/dotnetup || true'
       # see: https://stackoverflow.com/a/39530409
       - |
         find ./pixi/{{ .RID }}/ -printf "%P\n" | \
