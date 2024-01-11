@@ -42,10 +42,8 @@ tasks:
     cmds:
       - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/x64-aot -a x64 -p:PublishProfile=Aot
       - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/arm64-sc -a arm64 -p:PublishProfile=SelfContained
+      - rm ./bin/*/dotnetup.dbg ./bin/*/dotnetup.dsym ./bin/*/dotnetup.pdb || true
       - ls -hal ./bin/x64-aot ./bin/arm64-sc
-      - rm ./bin/x64-aot/dotnetup.dbg ./bin/arm64-sc/dotnetup.pdb || true
-      - gzip -k ./bin/x64-aot/dotnetup
-      - gzip -k ./bin/arm64-sc/dotnetup
 
   test:
     deps:
@@ -56,3 +54,5 @@ tasks:
     deps:
       - test
     cmd: echo "TODO"
+    #- gzip -k ./bin/x64-aot/dotnetup{{exeExt}}
+    #- gzip -k ./bin/arm64-sc/dotnetup{{exeExt}}
