@@ -41,6 +41,8 @@ jobs:
       - uses: arduino/setup-task@v1
       - uses: actions/setup-dotnet@v4
         with: { global-json-file: ./global.json }
+      - uses: oknozor/cocogitto-action@v3
+        with: { check: false }
       - run: task test
       - uses: actions/upload-artifact@v4
         with:
@@ -64,10 +66,17 @@ jobs:
   publish:
     needs: [lint, build_test]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     steps:
-      #- uses: actions/checkout@v4
-      #- uses: arduino/setup-task@v1
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
+        with: { path: ./bin }
+      - uses: oknozor/cocogitto-action@v3
         with:
-          path: ./bin
-      - run: ls -R
+          release: true
+          git-user: github-actions[bot]
+          git-user-email: github-actions[bot]@users.noreply.github.com
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

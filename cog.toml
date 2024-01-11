@@ -1,0 +1,53 @@
+# The Conventional Commits toolbox
+# see: https://github.com/cocogitto/cocogitto
+
+# All version numbers should be prefixed with v to denote
+# a version number over anything other type of tag
+tag_prefix = "v"
+
+# Only releases from master are allowed
+branch_whitelist = ["master"]
+
+# Check commit history, starting from the latest tag to HEAD
+from_latest_tag = true
+
+pre_bump_hooks = [
+  # Compress our binaries
+  "gzip -k ./bin/linux-x64-aot/dotnetup",
+  "gzip -k ./bin/linux-x64-sc/dotnetup",
+  "gzip -k ./bin/darwin-x64-aot/dotnetup",
+  "gzip -k ./bin/darwin-x64-sc/dotnetup",
+  "gzip -k ./bin/windows-x64-aot/dotnetup.exe",
+  "gzip -k ./bin/windows-x64-sc/dotnetup.exe",
+
+  # Move & rename them into a new staging dir
+  "mkdir -p ./publish",
+  "mv ./bin/linux-x64-aot/dotnetup.gz ./publish/dotnetup-linux-x64-aot.gz",
+  "mv ./bin/linux-x64-sc/dotnetup.gz ./publish/dotnetup-linux-x64-sc.gz",
+  "mv ./bin/darwin-x64-aot/dotnetup.gz ./publish/dotnetup-darwin-x64-aot.gz",
+  "mv ./bin/darwin-x64-sc/dotnetup.gz ./publish/dotnetup-darwin-x64-sc.gz",
+  "mv ./bin/windows-x64-aot/dotnetup.exe.gz ./publish/dotnetup-windows-x64-aot.exe.gz",
+  "mv ./bin/windows-x64-sc/dotnetup.exe.gz ./publish/dotnetup-windows-x64-sc.exe.gz",
+
+  # Generate digests of the final artifacts
+  'sha256sum ./publish/* > ./publish/dotnetup-checksums.txt',
+]
+
+# Publish artifacts, push up the changelogs & tags
+post_bump_hooks = [
+  "git push",
+  "git push --tags",
+  "cog changelog --at {{version}} > GITHUB_CHANGELOG.md",
+  "gh release create {{version}} -F GITHUB_CHANGELOG.md ./publish/*",
+]
+
+# Create a CHANGELOG that includes helpful links to github diffs / commits / PRs, etc.
+[changelog]
+path = "CHANGELOG.md"
+template = "remote"
+remote = "github.com"
+owner = "brad-jones"
+repository = "dotnetup"
+authors = [
+  { signature = "Brad Jones", username = "brad-jones" },
+]

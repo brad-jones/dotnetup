@@ -39,10 +39,13 @@ tasks:
 
   build:
     desc: Builds both an AOT & Self-Contained binaries for the current host os
+    vars:
+      NEXT_VERSION:
+        sh: cog bump -d -a || echo "0.0.0"
     cmds:
-      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/x64-aot -a x64 -p:PublishProfile=Aot
-      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/x64-sc -a x64 -p:PublishProfile=SelfContained
-      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/arm64-sc -a arm64 -p:PublishProfile=SelfContained
+      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/x64-aot -a x64 -p:PublishProfile=Aot -p:Version={{.NEXT_VERSION}}
+      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/x64-sc -a x64 -p:PublishProfile=SelfContained -p:Version={{.NEXT_VERSION}}
+      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/arm64-sc -a arm64 -p:PublishProfile=SelfContained -p:Version={{.NEXT_VERSION}}
       - rm -rf ./bin/*/dotnetup.dbg ./bin/*/dotnetup.dsym ./bin/*/dotnetup.pdb || true
       - ls -hal ./bin/x64-aot ./bin/x64-sc ./bin/arm64-sc
 
@@ -50,10 +53,3 @@ tasks:
     deps:
       - build
     cmd: dotnet test ./test
-
-  publish:
-    deps:
-      - test
-    cmd: echo "TODO"
-    #- gzip -k ./bin/x64-aot/dotnetup{{exeExt}}
-    #- gzip -k ./bin/arm64-sc/dotnetup{{exeExt}}
