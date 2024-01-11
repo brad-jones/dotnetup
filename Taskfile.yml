@@ -55,3 +55,39 @@ tasks:
     deps:
       - build
     cmd: dotnet test ./test
+
+  publish:
+    desc: This is triggered by cog if there is a need to perform a release & generates the final publishable artifacts
+    cmds:
+      - mkdir -p ./publish
+      - task: gzip-bins
+      - task: stage-gzipped-bins
+      - task: generate-digests
+
+  gzip-bins:
+    cmds:
+      - gzip -k ./bin/linux-x64-aot/dotnetup
+      - gzip -k ./bin/linux-x64-sc/dotnetup
+      - gzip -k ./bin/linux-arm64-sc/dotnetup
+      - gzip -k ./bin/darwin-x64-aot/dotnetup
+      - gzip -k ./bin/darwin-x64-sc/dotnetup
+      - gzip -k ./bin/darwin-arm64-sc/dotnetup
+      - gzip -k ./bin/windows-x64-aot/dotnetup.exe
+      - gzip -k ./bin/windows-x64-sc/dotnetup.exe
+      - gzip -k ./bin/windows-arm64-sc/dotnetup.exe
+
+  stage-gzipped-bins:
+    cmds:
+      - mv ./bin/linux-x64-aot/dotnetup.gz ./publish/dotnetup-linux-x64-aot.gz
+      - mv ./bin/linux-x64-sc/dotnetup.gz ./publish/dotnetup-linux-x64-sc.gz
+      - mv ./bin/linux-arm64-sc/dotnetup.gz ./publish/dotnetup-linux-arm64-sc.gz
+      - mv ./bin/darwin-x64-aot/dotnetup.gz ./publish/dotnetup-darwin-x64-aot.gz
+      - mv ./bin/darwin-x64-sc/dotnetup.gz ./publish/dotnetup-darwin-x64-sc.gz
+      - mv ./bin/darwin-arm64-sc/dotnetup.gz ./publish/dotnetup-darwin-arm64-sc.gz
+      - mv ./bin/windows-x64-aot/dotnetup.exe.gz ./publish/dotnetup-windows-x64-aot.exe.gz
+      - mv ./bin/windows-x64-sc/dotnetup.exe.gz ./publish/dotnetup-windows-x64-sc.exe.gz
+      - mv ./bin/windows-arm64-sc/dotnetup.exe.gz ./publish/dotnetup-windows-arm64-sc.exe.gz
+
+  generate-digests:
+    dir: ./publish
+    cmd: sha256sum * > dotnetup-checksums.txt
