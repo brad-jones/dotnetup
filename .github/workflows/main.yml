@@ -1,48 +1,25 @@
 on: { push: { branches: [master] } }
 
 jobs:
-  devcontainer:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: devcontainers/ci@v0.3
-        with:
-          imageName: ghcr.io/brad-jones/dotnetup/devcontainer
-          cacheFrom: ghcr.io/brad-jones/dotnetup/devcontainer
-          push: always
-
   lint:
-    needs: [devcontainer]
     runs-on: ubuntu-latest
-    container: ghcr.io/brad-jones/dotnetup/devcontainer
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: oknozor/cocogitto-action@v3
+      - uses: arduino/setup-task@v1
+      - uses: mfinelli/setup-shfmt@v3
+      - uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: ./global.json
+      - run: dotnet tools restore
+      - uses: robinraju/release-downloader@v1.8
+        with:
+          repository: "dprint/dprint"
+          fileName: "dprint-x86_64-unknown-linux-gnu.zip"
+          tag: "0.45.0"
+          extract: true
+          out-file-path: "./.tools"
+      - run: chmod +x ./.tools/dprint && echo "$PWD/.tools" >> $GITHUB_PATH
       - run: task lint
-
-  #lint:
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - uses: actions/checkout@v4
-  #    - uses: arduino/setup-task@v1
-  #    - uses: mfinelli/setup-shfmt@v3
-  #    - uses: actions/setup-dotnet@v4
-  #      with:
-  #        global-json-file: ./global.json
-  #    - run: dotnet tools restore
-  #    - uses: robinraju/release-downloader@v1.8
-  #      with:
-  #        repository: "dprint/dprint"
-  #        fileName: "dprint-x86_64-unknown-linux-gnu.zip"
-  #        tag: "0.45.0"
-  #        extract: true
-  #        out-file-path: "./.tools"
-  #    - run: chmod +x ./.tools/dprint && echo "$PWD/.tools" >> $GITHUB_PATH
-  #    - run: task lint
