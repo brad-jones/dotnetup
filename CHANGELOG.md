@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.1.5](https://github.com/brad-jones/dotnetup/compare/v0.1.4..v0.1.5) - 2024-01-11
+#### Bug Fixes
+- **(package)** the env var json file needs to be listed in the paths json - ([f8811dc](https://github.com/brad-jones/dotnetup/commit/f8811dc6a7a3ac2281b288cd9d8aa356f721ce50)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.1.4](https://github.com/brad-jones/dotnetup/compare/v0.1.3..v0.1.4) - 2024-01-11
 #### Bug Fixes
 - **(package)** logic error in optional chmod - ([da95773](https://github.com/brad-jones/dotnetup/commit/da9577356eba4e81c707eb0caaa12af10dc42487)) - [@brad-jones](https://github.com/brad-jones)
