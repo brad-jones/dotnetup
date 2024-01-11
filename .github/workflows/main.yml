@@ -39,6 +39,7 @@ jobs:
           extract: true
           out-file-path: "./.tools"
       - run: |
+          ls -R ./.tools
           mv ./.tools/shfmt_*_linux_amd64 ./.tools/shfmt
           chmod +x ./.tools/cog
           chmod +x ./.tools/task
