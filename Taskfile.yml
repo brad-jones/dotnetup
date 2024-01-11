@@ -109,7 +109,6 @@ tasks:
     cmd: sha256sum * > dotnetup-checksums.txt
 
   pixi-package:
-    silent: true
     vars:
       BUILD_NUM: 0
       HASH:
@@ -164,6 +163,7 @@ tasks:
           ]
         }
     cmds:
+      - echo "::group::pixi-package-{{ .RID }}"
       - mkdir -p ./pixi/{{ .RID }}
       - mkdir -p ./pixi/{{ .RID }}/bin
       - mkdir -p ./pixi/{{ .RID }}/info
@@ -173,11 +173,12 @@ tasks:
       - echo '{{ .PATHS_JSON }}' > ./pixi/{{ .RID }}/info/paths.json
       - echo '{{ .ENV_VARS_JSON }}' > ./pixi/{{ .RID }}/etc/conda/env_vars.d/dotnetup.json
       - cp ./bin/{{ .RID }}/dotnetup{{ .EXE }} ./pixi/{{ .RID }}/bin/
-      - chmod +x ./pixi/{{ .RID }}/bin/dotnetup || true
+      - '[ -f "./pixi/{{ .RID }}/bin/dotnetup" ] && chmod +x ./pixi/{{ .RID }}/bin/dotnetup'
       # see: https://stackoverflow.com/a/39530409
       - |
         find ./pixi/{{ .RID }}/ -printf "%P\n" | \
-        tar -cjf ./pixi/{{ .PKG_FILE_NAME }} --no-recursion -C ./pixi/{{ .RID }}/ -T -
+        tar -cjvf ./pixi/{{ .PKG_FILE_NAME }} --no-recursion -C ./pixi/{{ .RID }}/ -T -
+      - echo "::endgroup::"
 
   pixi-publish:
     vars:
@@ -186,6 +187,7 @@ tasks:
     cmds:
       - for: { var: PKGS }
         cmd: |
+          echo "::group::pixi-publish-{{ .ITEM }}"
           curl \
             --data-binary @{{ .ITEM }} \
             -H "Authorization: Bearer {{ .PREFIX_DEV_TOKEN }}" \
@@ -193,3 +195,4 @@ tasks:
             -H "X-File-SHA256: $(sha256sum -b {{ .ITEM }} | awk '{ print $1 }')" \
             -H "Content-Type: application/octet-stream" \
             https://prefix.dev/api/v1/upload/brads-forge
+          echo "::endgroup::"
