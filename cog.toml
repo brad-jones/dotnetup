@@ -12,6 +12,9 @@ branch_whitelist = ["master"]
 from_latest_tag = true
 
 pre_bump_hooks = [
+  # Ensure the generated changelog is formatted as per out standards
+  "dprint fmt CHANGELOG.md",
+
   # Ensure our git identity is setup inside the gha runner
   "git config --global user.name github-actions[bot]",
   "git config --global user.email github-actions[bot]@users.noreply.github.com",
