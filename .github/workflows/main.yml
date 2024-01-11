@@ -7,7 +7,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: ./actions/setup-deps
+      - uses: ./.github/actions/setup-deps
       - run: task -l
       - run: shfmt --help
       - run: dprint --help
