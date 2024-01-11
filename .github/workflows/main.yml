@@ -44,29 +44,19 @@ jobs:
           path: bin/arm64-sc/*
           compression-level: 0
           if-no-files-found: error
-#
-#publish:
-#  needs: [lint, build_test]
-#  runs-on: ubuntu-latest
-#  permissions:
-#    contents: write
-#    packages: write
-#  steps:
-#    - uses: actions/checkout@v4
-#    - uses: actions/download-artifact@v4
-#      with: { path: ./bin }
-#    - uses: robinraju/release-downloader@v1.8
-#      with:
-#        repository: "cocogitto/cocogitto"
-#        fileName: "cocogitto-*-x86_64-unknown-linux-musl.tar.gz"
-#        tag: "6.0.1"
-#        extract: true
-#        out-file-path: "./.tools"
-#    - run: |
-#        mv ./.tools/x86_64-unknown-linux-musl/cog ./.tools/cog
-#        chmod +x ./.tools/cog
-#        echo "$PWD/.tools" >> $GITHUB_PATH
-#    - run: cog bump --auto
-#      env:
-#        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#
+
+  publish:
+    needs: [lint, build_test]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/download-artifact@v4
+        with: { path: ./bin }
+      - uses: ./.github/actions/setup-deps
+      - run: cog bump --auto
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

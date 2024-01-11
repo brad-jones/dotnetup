@@ -51,6 +51,7 @@ tasks:
       - ls -hal ./bin/x64-aot ./bin/x64-sc ./bin/arm64-sc
 
   test:
+    desc: Builds & then runs an end to end test suite on the built binaries (those that are native to the current host)
     deps:
       - build
     cmd: dotnet test ./test
