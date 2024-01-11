@@ -2,7 +2,7 @@
 # see: https://github.com/cocogitto/cocogitto
 
 # All version numbers should be prefixed with v to denote
-# a version number over anything other type of tag
+# a version number over any other type of tag
 tag_prefix = "v"
 
 # Only releases from master are allowed
@@ -41,8 +41,8 @@ pre_bump_hooks = [
 post_bump_hooks = [
   "git push",
   "git push --tags",
-  "cog changelog --at {{version}} > GITHUB_CHANGELOG.md",
-  "gh release create {{version}} -F GITHUB_CHANGELOG.md ./publish/*",
+  "cog changelog --at v{{version}} > GITHUB_CHANGELOG.md",
+  "gh release create v{{version}} -F GITHUB_CHANGELOG.md ./publish/*",
 ]
 
 # Create a CHANGELOG that includes helpful links to github diffs / commits / PRs, etc.
