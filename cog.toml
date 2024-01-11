@@ -12,6 +12,10 @@ branch_whitelist = ["master"]
 from_latest_tag = true
 
 pre_bump_hooks = [
+  # Ensure our git identity is setup inside the gha runner
+  "git config --global user.name github-actions[bot]",
+  "git config --global user.email github-actions[bot]@users.noreply.github.com",
+
   # Compress our binaries
   "gzip -k ./bin/linux-x64-aot/dotnetup",
   "gzip -k ./bin/linux-x64-sc/dotnetup",
