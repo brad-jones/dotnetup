@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.1.1](https://github.com/brad-jones/dotnetup/compare/v0.1.0..v0.1.1) - 2024-01-11
+#### Bug Fixes
+- **(arm64)** forgot to publish arm64 binaries - ([d47a533](https://github.com/brad-jones/dotnetup/commit/d47a533262c3b97d50a371e15046de0db76df71e)) - [@brad-jones](https://github.com/brad-jones)
+#### Continuous Integration
+- **(cog)** run dprint on generated changelog - ([4bf4a60](https://github.com/brad-jones/dotnetup/commit/4bf4a6074de9f388b677e39149cdab61e1727923)) - [@brad-jones](https://github.com/brad-jones)
+#### Revert
+- **(cog)** turns out that the format of the CHANGELOG is important to cog so we will just ignore it from dprint instead - ([8ca46d7](https://github.com/brad-jones/dotnetup/commit/8ca46d7ccd81af07c5c14af016b33dd5aefaa0a4)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.1.0](https://github.com/brad-jones/dotnetup/compare/b5a084e6c462cbadafac4005949d762a056fda28..v0.1.0) - 2024-01-11
 #### Build system
 - **(lefthook)** add glob filters to dotnet fmt tasks - ([6fbdf0c](https://github.com/brad-jones/dotnetup/commit/6fbdf0c1fbffad3804d5cb6824a11c9630f540c8)) - [@brad-jones](https://github.com/brad-jones)
