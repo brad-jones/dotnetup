@@ -10,7 +10,8 @@ runs:
         tag: v3.33.1
 
     - name: Setup shfmt
-      uses: jaxxstorm/action-install-gh-release@v1.10.0
+      #uses: jaxxstorm/action-install-gh-release@v1.10.0
+      uses: elventear/action-install-gh-release@copy_rm
       with:
         repo: mvdan/sh
         tag: v3.7.0
