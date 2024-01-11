@@ -58,8 +58,8 @@ tasks:
       - build
     cmd: dotnet test ./test
 
-  publish:
-    desc: This is triggered by cog if there is a need to perform a release & generates the final publishable artifacts
+  package:
+    desc: This is triggered by cog as a pre_bump_hook to generate all the final publishable artifacts
     cmds:
       - mkdir -p ./publish
       - task: gzip-bins
@@ -71,6 +71,14 @@ tasks:
       - { task: pixi-package, vars: { RID: darwin-arm64-sc, PIXIOS: osx, PIXIARCH: arm64, EXE: "" } }
       - { task: pixi-package, vars: { RID: windows-x64-aot, PIXIOS: win, PIXIARCH: 64, EXE: ".exe" } }
       - { task: pixi-package, vars: { RID: windows-arm64-sc, PIXIOS: win, PIXIARCH: arm64, EXE: ".exe" } }
+
+  publish:
+    desc: This is triggered by cog as a post_bump_hook to publish all the final publishable artifacts
+    cmds:
+      - git push && git push --tags
+      - cog changelog --at v{{ .VERSION }} > GITHUB_CHANGELOG.md
+      - gh release create v{{ .VERSION }} -F GITHUB_CHANGELOG.md ./publish/*
+      - task: pixi-publish
 
   gzip-bins:
     cmds:
@@ -101,7 +109,7 @@ tasks:
     cmd: sha256sum * > dotnetup-checksums.txt
 
   pixi-package:
-    silent: false
+    silent: true
     vars:
       BUILD_NUM: 0
       HASH:
@@ -165,17 +173,23 @@ tasks:
       - echo '{{ .PATHS_JSON }}' > ./pixi/{{ .RID }}/info/paths.json
       - echo '{{ .ENV_VARS_JSON }}' > ./pixi/{{ .RID }}/etc/conda/env_vars.d/dotnetup.json
       - cp ./bin/{{ .RID }}/dotnetup{{ .EXE }} ./pixi/{{ .RID }}/bin/
-      - cmd: chmod +x ./pixi/{{ .RID }}/bin/dotnetup
-        platforms: [linux, darwin]
+      - chmod +x ./pixi/{{ .RID }}/bin/dotnetup || true
       # see: https://stackoverflow.com/a/39530409
       - |
         find ./pixi/{{ .RID }}/ -printf "%P\n" | \
         tar -cjf ./pixi/{{ .PKG_FILE_NAME }} --no-recursion -C ./pixi/{{ .RID }}/ -T -
-      - |
-        curl \
-          --data-binary @./pixi/{{ .PKG_FILE_NAME }} \
-          -H "Authorization: Bearer {{ .PREFIX_DEV_TOKEN }}" \
-          -H "X-File-Name: {{ .PKG_FILE_NAME }}" \
-          -H "X-File-SHA256: $(sha256sum -b ./pixi/{{ .PKG_FILE_NAME }} | awk '{ print $1 }')" \
-          -H "Content-Type: application/octet-stream" \
-          https://prefix.dev/api/v1/upload/brads-forge
+
+  pixi-publish:
+    vars:
+      PKGS:
+        sh: find ./pixi/*.tar.bz2 -exec echo {} +
+    cmds:
+      - for: { var: PKGS }
+        cmd: |
+          curl \
+            --data-binary @{{ .ITEM }} \
+            -H "Authorization: Bearer {{ .PREFIX_DEV_TOKEN }}" \
+            -H "X-File-Name: $(basename "{{ .ITEM }}")" \
+            -H "X-File-SHA256: $(sha256sum -b {{ .ITEM }} | awk '{ print $1 }')" \
+            -H "Content-Type: application/octet-stream" \
+            https://prefix.dev/api/v1/upload/brads-forge

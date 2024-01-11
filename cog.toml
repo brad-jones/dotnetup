@@ -16,16 +16,13 @@ pre_bump_hooks = [
   "git config --global user.name github-actions[bot]",
   "git config --global user.email github-actions[bot]@users.noreply.github.com",
 
-  # Run the publish task to generate all the final artifacts
-  "task publish VERSION={{version}}",
+  # Run the package task to generate all the final artifacts
+  "task package VERSION={{version}}",
 ]
 
-# Publish artifacts, push up the changelogs & tags
 post_bump_hooks = [
-  "git push",
-  "git push --tags",
-  "cog changelog --at v{{version}} > GITHUB_CHANGELOG.md",
-  "gh release create v{{version}} -F GITHUB_CHANGELOG.md ./publish/*",
+  # Publish artifacts, push up the changelogs & tags
+  "task publish VERSION={{version}}",
 ]
 
 # Create a CHANGELOG that includes helpful links to github diffs / commits / PRs, etc.
