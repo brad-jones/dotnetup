@@ -43,7 +43,7 @@ tasks:
       - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/x64-aot -a x64 -p:PublishProfile=Aot
       - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/x64-sc -a x64 -p:PublishProfile=SelfContained
       - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/arm64-sc -a arm64 -p:PublishProfile=SelfContained
-      - rm ./bin/*/dotnetup.dbg ./bin/*/dotnetup.dsym ./bin/*/dotnetup.pdb || true
+      - rm -rf ./bin/*/dotnetup.dbg ./bin/*/dotnetup.dsym ./bin/*/dotnetup.pdb || true
       - ls -hal ./bin/x64-aot ./bin/x64-sc ./bin/arm64-sc
 
   test:
