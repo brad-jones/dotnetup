@@ -69,11 +69,11 @@ tasks:
     desc: This is triggered by cog as a pre_bump_hook to generate all the final publishable artifacts
     vars:
       UNIX_ENV_VARS_SRC: pixi_env_vars
-      UNIX_ENV_VARS_DIGEST: abef8a425fbf74d1a7c2f6fbc00e8458b01f19a644f7e95f73ff0a39f4e65662
-      UNIX_ENV_VARS_SIZE: 289
+      UNIX_ENV_VARS_DIGEST: 491e80ffe51f5567fcdfda133263b2eaae70d2c6e5cabf433158deace8676434
+      UNIX_ENV_VARS_SIZE: 278
       WIN_ENV_VARS_SRC: pixi_env_vars_win
-      WIN_ENV_VARS_DIGEST: 36ad568f73e170cd51c4c251940becd98bfb8d5fd855fd7a082889c80b96ea15
-      WIN_ENV_VARS_SIZE: 288
+      WIN_ENV_VARS_DIGEST: 17fbb919ead077a87a63efd9da9533c8343ef646a81e860711c5cf38795db56b
+      WIN_ENV_VARS_SIZE: 275
     cmds:
       - mkdir -p ./publish
       - task: gzip-bins

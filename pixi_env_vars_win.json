@@ -1,6 +1,6 @@
 {
   "DOTNET_ROOT": "%CONDA_PREFIX%\\lib\\dotnet",
-  "DOTNET_TOOLS": "%DOTNET_ROOT%\\lib\\dotnet\\tools",
+  "DOTNET_TOOLS": "%DOTNET_ROOT%\\tools",
   "DOTNET_TOOLS_PATH": "%DOTNET_TOOLS%",
   "DOTNET_ADD_GLOBAL_TOOLS_TO_PATH": "false",
   "DOTNET_CLI_TELEMETRY_OPTOUT": "true",
