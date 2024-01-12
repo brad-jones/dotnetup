@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.2.2](https://github.com/brad-jones/dotnetup/compare/v0.2.1..v0.2.2) - 2024-01-12
+#### Bug Fixes
+- **(win)** env vars need to be given in the hosts native format - ([bf5eed5](https://github.com/brad-jones/dotnetup/commit/bf5eed586217f606b618930cee98f0eaeb9b00f8)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.2.1](https://github.com/brad-jones/dotnetup/compare/v0.2.0..v0.2.1) - 2024-01-12
 #### Bug Fixes
 - resolve symlinked dotnet roots - ([f07d613](https://github.com/brad-jones/dotnetup/commit/f07d6133484c4a1b192b396d2b8d5f3214a4df3d)) - [@brad-jones](https://github.com/brad-jones)
