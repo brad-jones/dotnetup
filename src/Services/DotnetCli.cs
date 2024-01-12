@@ -13,9 +13,6 @@ public static class DotnetCli
         if (!File.Exists(dotnetExe))
             return false;
 
-        if (!isWin)
-            File.SetUnixFileMode(dotnetExe, UnixFileMode.UserExecute);
-
         var infoResult = await Command.Run(dotnetExe, ["--info"]).Task;
         if (infoResult.ExitCode != 0)
             return false;
