@@ -67,17 +67,72 @@ tasks:
 
   package:
     desc: This is triggered by cog as a pre_bump_hook to generate all the final publishable artifacts
+    vars:
+      UNIX_ENV_VARS_SRC: pixi_env_vars
+      UNIX_ENV_VARS_DIGEST: abef8a425fbf74d1a7c2f6fbc00e8458b01f19a644f7e95f73ff0a39f4e65662
+      UNIX_ENV_VARS_SIZE: 289
+      WIN_ENV_VARS_SRC: pixi_env_vars_win
+      WIN_ENV_VARS_DIGEST: 36ad568f73e170cd51c4c251940becd98bfb8d5fd855fd7a082889c80b96ea15
+      WIN_ENV_VARS_SIZE: 288
     cmds:
       - mkdir -p ./publish
       - task: gzip-bins
       - task: stage-gzipped-bins
       - task: generate-digests
-      - { task: pixi-package, vars: { RID: linux-x64-aot, PIXIOS: linux, PIXIARCH: 64, EXE: "" } }
-      - { task: pixi-package, vars: { RID: linux-arm64-sc, PIXIOS: linux, PIXIARCH: aarch64, EXE: "" } }
-      - { task: pixi-package, vars: { RID: darwin-x64-aot, PIXIOS: osx, PIXIARCH: 64, EXE: "" } }
-      - { task: pixi-package, vars: { RID: darwin-arm64-sc, PIXIOS: osx, PIXIARCH: arm64, EXE: "" } }
-      - { task: pixi-package, vars: { RID: windows-x64-aot, PIXIOS: win, PIXIARCH: 64, EXE: ".exe" } }
-      - { task: pixi-package, vars: { RID: windows-arm64-sc, PIXIOS: win, PIXIARCH: arm64, EXE: ".exe" } }
+      - task: pixi-package
+        vars:
+          RID: linux-x64-aot
+          PIXIOS: linux
+          PIXIARCH: 64
+          EXE: ""
+          ENV_VARS_SRC: "{{ .UNIX_ENV_VARS_SRC }}"
+          ENV_VARS_DIGEST: "{{ .UNIX_ENV_VARS_DIGEST }}"
+          ENV_VARS_SIZE: "{{ .UNIX_ENV_VARS_SIZE }}"
+      - task: pixi-package
+        vars:
+          RID: linux-arm64-sc
+          PIXIOS: linux
+          PIXIARCH: aarch64
+          EXE: ""
+          ENV_VARS_SRC: "{{ .UNIX_ENV_VARS_SRC }}"
+          ENV_VARS_DIGEST: "{{ .UNIX_ENV_VARS_DIGEST }}"
+          ENV_VARS_SIZE: "{{ .UNIX_ENV_VARS_SIZE }}"
+      - task: pixi-package
+        vars:
+          RID: darwin-x64-aot
+          PIXIOS: osx
+          PIXIARCH: 64
+          EXE: ""
+          ENV_VARS_SRC: "{{ .UNIX_ENV_VARS_SRC }}"
+          ENV_VARS_DIGEST: "{{ .UNIX_ENV_VARS_DIGEST }}"
+          ENV_VARS_SIZE: "{{ .UNIX_ENV_VARS_SIZE }}"
+      - task: pixi-package
+        vars:
+          RID: darwin-arm64-sc
+          PIXIOS: osx
+          PIXIARCH: arm64
+          EXE: ""
+          ENV_VARS_SRC: "{{ .UNIX_ENV_VARS_SRC }}"
+          ENV_VARS_DIGEST: "{{ .UNIX_ENV_VARS_DIGEST }}"
+          ENV_VARS_SIZE: "{{ .UNIX_ENV_VARS_SIZE }}"
+      - task: pixi-package
+        vars:
+          RID: windows-x64-aot
+          PIXIOS: win
+          PIXIARCH: 64
+          EXE: ".exe"
+          ENV_VARS_SRC: "{{ .WIN_ENV_VARS_SRC }}"
+          ENV_VARS_DIGEST: "{{ .WIN_ENV_VARS_DIGEST }}"
+          ENV_VARS_SIZE: "{{ .WIN_ENV_VARS_SIZE }}"
+      - task: pixi-package
+        vars:
+          RID: windows-arm64-sc
+          PIXIOS: win
+          PIXIARCH: arm64
+          EXE: ".exe"
+          ENV_VARS_SRC: "{{ .WIN_ENV_VARS_SRC }}"
+          ENV_VARS_DIGEST: "{{ .WIN_ENV_VARS_DIGEST }}"
+          ENV_VARS_SIZE: "{{ .WIN_ENV_VARS_SIZE }}"
 
   publish:
     desc: This is triggered by cog as a post_bump_hook to publish all the final publishable artifacts
@@ -161,8 +216,8 @@ tasks:
             {
               "_path": "etc/conda/env_vars.d/dotnetup.json",
               "path_type": "hardlink",
-              "sha256": "abef8a425fbf74d1a7c2f6fbc00e8458b01f19a644f7e95f73ff0a39f4e65662",
-              "size_in_bytes": 289
+              "sha256": "{{ .ENV_VARS_DIGEST }}",
+              "size_in_bytes": {{ .ENV_VARS_SIZE }}
             }
           ]
         }
@@ -175,7 +230,7 @@ tasks:
       - echo '{{ .INDEX_JSON }}' > ./pixi/{{ .RID }}/info/index.json
       - echo '{{ .ABOUT_JSON }}' > ./pixi/{{ .RID }}/info/about.json
       - echo '{{ .PATHS_JSON }}' > ./pixi/{{ .RID }}/info/paths.json
-      - cp ./pixi_env_vars.json ./pixi/{{ .RID }}/etc/conda/env_vars.d/dotnetup.json
+      - cp ./{{ .ENV_VARS_SRC }}.json ./pixi/{{ .RID }}/etc/conda/env_vars.d/dotnetup.json
       - cp ./bin/{{ .RID }}/dotnetup{{ .EXE }} ./pixi/{{ .RID }}/bin/
       - '[ -f "./pixi/{{ .RID }}/bin/dotnetup" ] && chmod +x ./pixi/{{ .RID }}/bin/dotnetup || true'
       # see: https://stackoverflow.com/a/39530409
