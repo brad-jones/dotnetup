@@ -27,7 +27,7 @@ public class ReleasesClient
         return SemVersion.Parse(notes?.Releases.FirstOrDefault()?.Sdk.Version ?? "0.0.0", SemVersionStyles.Any);
     }
 
-    public static async Task<Tuple<string, ReleaseNoteSdkFile>> GetVersion(
+    public static async Task<Tuple<SemVersion, ReleaseNoteSdkFile>> GetVersion(
         SemVersion version,
         CancellationToken cancel = default
     )
@@ -47,30 +47,25 @@ public class ReleasesClient
         }
 
         return Tuple.Create(
-            release.Version,
+            SemVersion.Parse(release.Version, SemVersionStyles.Any),
             release.Files.Single(_ => _.Rid == RuntimeInformation.RuntimeIdentifier && _.Name.EndsWith(FileExt))
         );
     }
 
-    public static async Task<Tuple<string, string>> DownloadVersion(
+    public static async Task<Tuple<SemVersion, string>> DownloadVersion(
         SemVersion version,
-        string dotnetExe,
+        string dotnetRoot,
         CancellationToken cancel = default
     )
     {
         Console.Write($"▶️  looking up release notes for {version}...  ");
         var (resolvedVersion, download) = await GetVersion(version, cancel);
-        if (!version.Equals(SemVersion.Parse(resolvedVersion, SemVersionStyles.Any)))
+        if (!version.Equals(resolvedVersion))
         {
-            if (File.Exists(dotnetExe))
+            if (await DotnetCli.VersionInstalled(dotnetRoot, resolvedVersion))
             {
-                var r = await Shell.Run(dotnetExe, ["--info"]).Task;
-                var sdkString = $"{resolvedVersion} [{Path.Join(Path.GetDirectoryName(dotnetExe), "sdk")}]";
-                if (r.ExitCode == 0 && r.StandardOutput.Contains(sdkString))
-                {
-                    Console.WriteLine($"resolved({resolvedVersion}) - already installed ✔️");
-                    return Tuple.Create(resolvedVersion, string.Empty);
-                }
+                Console.WriteLine($"resolved({resolvedVersion}) - already installed ✔️");
+                return Tuple.Create(resolvedVersion, string.Empty);
             }
 
             Console.WriteLine($"resolved({resolvedVersion}) ✔️");
