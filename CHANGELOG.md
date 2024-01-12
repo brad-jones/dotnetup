@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.2.4](https://github.com/brad-jones/dotnetup/compare/v0.2.3..v0.2.4) - 2024-01-12
+#### Bug Fixes
+- do not modify file permissions ourselves - ([dae6a25](https://github.com/brad-jones/dotnetup/commit/dae6a257ebc240b8865101c1515eb3f7546f2529)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.2.3](https://github.com/brad-jones/dotnetup/compare/v0.2.2..v0.2.3) - 2024-01-12
 #### Bug Fixes
 - dotnet tools env var path - ([0ab4e18](https://github.com/brad-jones/dotnetup/commit/0ab4e18a72f66631a277e48d03fc706697d9a2b6)) - [@brad-jones](https://github.com/brad-jones)
