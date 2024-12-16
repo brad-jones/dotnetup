@@ -29,8 +29,8 @@ public static class HttpClientProgressExtensions
         var progress = progressBar.AsProgress<float>();
 
         static float GetProgressPercentage(float totalBytes, float currentBytes) => totalBytes / currentBytes;
-        var progressWrapper = new Progress<long>(
-            totalBytes => progress.Report(GetProgressPercentage(totalBytes, contentLength.Value))
+        var progressWrapper = new Progress<long>(totalBytes =>
+            progress.Report(GetProgressPercentage(totalBytes, contentLength.Value))
         );
         await download.CopyToAsync(destination, 81920, progressWrapper, cancel);
     }

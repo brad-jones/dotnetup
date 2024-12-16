@@ -110,3 +110,8 @@ $RECYCLE.BIN/
 
 publish/
 pixi/
+
+# pixi environments
+.pixi
+*.egg-info
+output/

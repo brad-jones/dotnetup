@@ -2,6 +2,26 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.3.0](https://github.com/brad-jones/dotnetup/compare/b9d4ff065d1b017532ff14ced6b9ecd971cac37f..v0.3.0) - 2024-12-16
+#### Features
+- gearing up for release, this should make cog give us a version - ([a4cda59](https://github.com/brad-jones/dotnetup/commit/a4cda596504b5b8b2c65643332fe19d76aab7186)) - [@brad-jones](https://github.com/brad-jones)
+#### Miscellaneous Chores
+- **(wip)** testing upload - ([5c9c258](https://github.com/brad-jones/dotnetup/commit/5c9c25833d2c88b92d5f403d15fb794af03762a6)) - [@brad-jones](https://github.com/brad-jones)
+- **(wip)** forgot to create env dir - ([f3002d9](https://github.com/brad-jones/dotnetup/commit/f3002d9a49a17971f0f302bf7aaee605f6582f57)) - [@brad-jones](https://github.com/brad-jones)
+- **(wip)** add env vars - ([fb1a41e](https://github.com/brad-jones/dotnetup/commit/fb1a41e6e9fcbac7e603ffef9954e0eee51c36e1)) - [@brad-jones](https://github.com/brad-jones)
+- **(wip)** rattler seemed to include everything into the package - ([6494e0d](https://github.com/brad-jones/dotnetup/commit/6494e0df525d0809d01e68d9638be8345bec5eab)) - [@brad-jones](https://github.com/brad-jones)
+- **(wip)** need to pass version down to rattler - ([bfeb012](https://github.com/brad-jones/dotnetup/commit/bfeb0122fe72fed3fe5f9ee2a07cbd12391179f1)) - [@brad-jones](https://github.com/brad-jones)
+- **(wip)** sort out upload structurer - ([4f2e192](https://github.com/brad-jones/dotnetup/commit/4f2e19214dedd60e089571414466b95e5580c1a2)) - [@brad-jones](https://github.com/brad-jones)
+- **(wip)** made an ops in the matrix - ([340cd82](https://github.com/brad-jones/dotnetup/commit/340cd821be5f93e690cacc8a8a8fa2dd14cbe8ba)) - [@brad-jones](https://github.com/brad-jones)
+- **(wip)** still refactoring pipelines - ([b917b0a](https://github.com/brad-jones/dotnetup/commit/b917b0a1ca6b1ef0bfba0ed18e3e2dd9e6958a31)) - [@brad-jones](https://github.com/brad-jones)
+- **(wip)** add pixi support for our other platforms - ([8e9896d](https://github.com/brad-jones/dotnetup/commit/8e9896d1b8dd2ac1ad8cf32c9502aa446682b24d)) - [@brad-jones](https://github.com/brad-jones)
+- **(wip)** more pipeline work - ([76b476c](https://github.com/brad-jones/dotnetup/commit/76b476c86a3e24d327aa0ad076e5474f8234acf5)) - [@brad-jones](https://github.com/brad-jones)
+- **(wip)** changes to pipelines - ([6c3f250](https://github.com/brad-jones/dotnetup/commit/6c3f2506c3a9939d28821a720b55819d540f7aaf)) - [@brad-jones](https://github.com/brad-jones)
+- **(wip)** ensure dotnet is installed in ci - ([3dda046](https://github.com/brad-jones/dotnetup/commit/3dda046358bea9d022845cb7d689958b8e767375)) - [@brad-jones](https://github.com/brad-jones)
+- **(wip)** working on new version - ([b9d4ff0](https://github.com/brad-jones/dotnetup/commit/b9d4ff065d1b017532ff14ced6b9ecd971cac37f)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.2.4](https://github.com/brad-jones/dotnetup/compare/v0.2.3..v0.2.4) - 2024-01-12
 #### Bug Fixes
 - do not modify file permissions ourselves - ([dae6a25](https://github.com/brad-jones/dotnetup/commit/dae6a257ebc240b8865101c1515eb3f7546f2529)) - [@brad-jones](https://github.com/brad-jones)

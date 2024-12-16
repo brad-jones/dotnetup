@@ -32,7 +32,7 @@ public class ReleasesClient
         CancellationToken cancel = default
     )
     {
-        var notes = await GetReleaseNotes(version.Major, cancel);
+        var notes = await GetReleaseNotes((int)version.Major, cancel);
 
         ReleaseNoteSdk? release = null;
         if (version.Minor == 0 && version.Patch == 0)

@@ -4,63 +4,80 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
-      - uses: ./.github/actions/setup-deps
-      - run: task lint
+      - name: ⬇️ Git Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-  build_test:
+      - name: ⚙️ Setup Build Deps
+        uses: ./.github/actions/setup-deps
+
+      - name: ⛔ Lint Source Code
+        run: task lint
+
+  build:
+    name: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.profile }}
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - runner: ubuntu-latest
-            os: linux
-          - runner: windows-latest
-            os: windows
-          - runner: macos-latest
-            os: darwin
+          - { runner: ubuntu-latest, os: linux, arch: x64, profile: "Aot" }
+          - { runner: ubuntu-latest, os: linux, arch: x64, profile: "SelfContained" }
+          - { runner: ubuntu-latest, os: linux, arch: arm64, profile: "SelfContained" }
+          - { runner: windows-latest, os: win, arch: x64, profile: "Aot" }
+          - { runner: windows-latest, os: win, arch: x64, profile: "SelfContained" }
+          - { runner: windows-latest, os: win, arch: arm64, profile: "SelfContained" }
+          - { runner: macos-13, os: osx, arch: x64, profile: "Aot" }
+          - { runner: macos-13, os: osx, arch: x64, profile: "SelfContained" }
+          - { runner: macos-14, os: osx, arch: arm64, profile: "Aot" }
+          - { runner: macos-14, os: osx, arch: arm64, profile: "SelfContained" }
     steps:
-      - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
-      - uses: ./.github/actions/setup-deps
-      - run: task test
-      - uses: actions/upload-artifact@v4
+      - name: ⬇️ Git Checkout
+        uses: actions/checkout@v4
         with:
-          name: ${{ matrix.os }}-x64-aot
-          path: bin/x64-aot/*
-          compression-level: 0
-          if-no-files-found: error
-          retention-days: 1
-      - uses: actions/upload-artifact@v4
+          fetch-depth: 0
+
+      - name: ⚙️ Setup Build Deps
+        uses: ./.github/actions/setup-deps
+
+      - name: 📦 Build binaries
+        env:
+          DOTNET_ARCH: ${{ matrix.arch }}
+          PUBLISH_PROFILE: ${{ matrix.profile }}
+        run: task build
+
+      - name: ⬆️ Upload binaries
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.os }}-x64-sc
-          path: bin/x64-sc/*
-          compression-level: 0
-          if-no-files-found: error
-          retention-days: 1
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.os }}-arm64-sc
-          path: bin/arm64-sc/*
+          name: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.profile }}
+          path: bin/**/*
           compression-level: 0
           if-no-files-found: error
           retention-days: 1
 
   publish:
-    needs: [lint, build_test]
+    needs: [lint, build]
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       contents: write
       packages: write
     steps:
-      - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
-      - uses: actions/download-artifact@v4
-        with: { path: ./bin }
-      - uses: ./.github/actions/setup-deps
-      - run: cog bump --auto
+      - name: ⬇️ Git Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: ⏬ Download binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: ./bin
+
+      - name: ⚙️ Setup Build Deps
+        uses: ./.github/actions/setup-deps
+
+      - name: 🚀 Publish Release
+        run: cog bump --auto
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PREFIX_DEV_TOKEN: ${{ secrets.PREFIX_DEV_TOKEN }}

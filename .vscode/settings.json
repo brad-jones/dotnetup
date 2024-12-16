@@ -1,22 +1,39 @@
 {
+  "deno.enable": true,
+  "deno.cacheOnSave": true,
   "editor.rulers": [80, 120],
+  "editor.renderWhitespace": "boundary",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
   "editor.defaultFormatter": "dprint.dprint",
+  "[json]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[toml]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "dprint.dprint"
+  },
   "[csharp]": {
     "editor.defaultFormatter": "csharpier.csharpier-vscode"
   },
-  "editor.formatOnSave": true,
-  "editor.formatOnPaste": true,
-  "editor.renderWhitespace": "boundary",
   "files.associations": {
     "*.gitmsgtpl": "git-commit"
   },
   "evenBetterToml.schema.associations": {
-    // Because there is no schema for cog yet but there is another schema for
-    // another unrelated tool called cog that evenBetterToml discovers which
-    // causes all sorts of havoc.
-    "cog.toml": "https://json.schemastore.org/base.json"
+    "cog.toml": "https://docs.cocogitto.io/cog-schema.json"
   },
   "emojisense.languages": {
-    "csharp": true
+    "*": true
   }
 }

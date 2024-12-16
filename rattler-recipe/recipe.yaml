@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/prefix-dev/recipe-format/main/schema.json
+
+context:
+  version: ${{ env.get("VERSION") }}
+
+package:
+  name: dotnetup
+  version: ${{ version }}
+
+about:
+  homepage: https://github.com/brad-jones/dotnetup/
+  repository: https://github.com/brad-jones/dotnetup/
+  summary: "dotnet sdk version manager (ala: rustup)"
+  description: ${{ env.get("DESCRIPTION") }}
+  license: MIT
+
+source:
+  path: ${{ env.get("SRC_PATH") }}
+
+requirements:
+  run:
+    - if: unix
+      then:
+        - zlib
+        - libcurl
+        - icu
+        - krb5
+    - if: linux
+      then:
+        - lttng-ust
+        - __glibc>=2.17
+
+build:
+  dynamic_linking:
+    binary_relocation: false
+  script:
+    - mkdir -p $PREFIX/bin
+    - mkdir -p $PREFIX/etc/conda/env_vars.d
+    - if: win
+      then: cp ./dotnetup.exe $PREFIX/bin/dotnetup.exe
+      else: cp ./dotnetup $PREFIX/bin/dotnetup && chmod +x $PREFIX/bin/dotnetup
+    - if: win
+      then: cp $RECIPE_DIR/env-win.json $PREFIX/etc/conda/env_vars.d/dotnetup.json
+    - if: linux
+      then: cp $RECIPE_DIR/env-linux.json $PREFIX/etc/conda/env_vars.d/dotnetup.json
+    - if: osx
+      then: cp $RECIPE_DIR/env-osx.json $PREFIX/etc/conda/env_vars.d/dotnetup.json
+
+tests:
+  - script: test "$(dotnetup --version | cut -d "+" -f 1)" = "${{ version }}"

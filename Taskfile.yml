@@ -5,13 +5,14 @@ version: "3"
 dotenv: [".env"]
 
 tasks:
-  onCreate:
-    desc: Connected to the devcontainer onCreateCommand hook
+  init:
+    desc: Setup dev env
     cmds:
       - lefthook install -f
       - git config pull.rebase true
       - git config core.editor "code --wait"
       - git config commit.template "$PWD/.gitmsgtpl"
+      - deno run -A ./.tasks/install-dotnet.ts
       - dotnet tool restore
       - dotnet restore
 
@@ -30,109 +31,100 @@ tasks:
       - dotnet format style -v d --verify-no-changes
       - dotnet format analyzers -v d --verify-no-changes
 
-  run:
-    desc: Use me to quickly perform some manual exploratory testing / debugging.
-    cmd: DOTNET_ROOT="./tmp-dn-root" dotnet run --project ./src/dotnetup.csproj -- {{.CLI_ARGS}}
-
-  runAot:
-    desc: Use me to less quickly perform some manual exploratory testing / debugging against the aot build.
-    cmds:
-      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin -p:PublishProfile=Aot
-      - ls -hal ./bin/dotnetup{{exeExt}}
-      - DOTNET_ROOT="./tmp-dn-root" ./bin/dotnetup{{exeExt}} {{.CLI_ARGS}}
-
-  clean:
-    desc: Deletes all generated files
-    cmds:
-      - rm -rf ./bin ./**/bin ./**/obj ./publish ./pixi ./tmp-dn-root
-      - dotnet restore
-
   build:
-    desc: Builds both an AOT & Self-Contained binaries for the current host os
+    desc: Builds either an AOT or Self-Contained binary for the given architecture.
     vars:
+      PUBLISH_PROFILE: '{{.PUBLISH_PROFILE | default "Aot"}}'
+      DOTNET_ARCH: '{{.DOTNET_ARCH | default "x64"}}'
       NEXT_VERSION:
-        sh: echo "$(cog bump -d -a || echo "v0.0.0")" | sed '1s/^.//'
+        sh: deno run -qA ./.tasks/next-version.ts
     cmds:
-      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/x64-aot -a x64 -p:PublishProfile=Aot -p:Version={{.NEXT_VERSION}}
-      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/x64-sc -a x64 -p:PublishProfile=SelfContained -p:Version={{.NEXT_VERSION}}
-      - dotnet publish ./src/dotnetup.csproj -c Release -o ./bin/arm64-sc -a arm64 -p:PublishProfile=SelfContained -p:Version={{.NEXT_VERSION}}
-      - rm -rf ./bin/*/dotnetup.dbg ./bin/*/dotnetup.dsym ./bin/*/dotnetup.pdb || true
-      - ls -hal ./bin/x64-aot ./bin/x64-sc ./bin/arm64-sc
-
-  test:
-    desc: Builds & then runs an end to end test suite on the built binaries (those that are native to the current host)
-    deps:
-      - build
-    cmd: dotnet test ./test
+      - >-
+        dotnet publish ./src/dotnetup.csproj
+        -c Release
+        -o ./bin
+        -a {{.DOTNET_ARCH}}
+        -p:PublishProfile={{.PUBLISH_PROFILE}}
+        -p:Version={{.NEXT_VERSION}}
+      - rm -rf ./bin/dotnetup.dbg ./bin/dotnetup.dSYM ./bin/dotnetup.pdb || true
 
   package:
     desc: This is triggered by cog as a pre_bump_hook to generate all the final publishable artifacts
-    vars:
-      UNIX_ENV_VARS_SRC: pixi_env_vars
-      UNIX_ENV_VARS_DIGEST: 491e80ffe51f5567fcdfda133263b2eaae70d2c6e5cabf433158deace8676434
-      UNIX_ENV_VARS_SIZE: 278
-      WIN_ENV_VARS_SRC: pixi_env_vars_win
-      WIN_ENV_VARS_DIGEST: 17fbb919ead077a87a63efd9da9533c8343ef646a81e860711c5cf38795db56b
-      WIN_ENV_VARS_SIZE: 275
     cmds:
       - mkdir -p ./publish
       - task: gzip-bins
       - task: stage-gzipped-bins
       - task: generate-digests
-      - task: pixi-package
-        vars:
-          RID: linux-x64-aot
-          PIXIOS: linux
-          PIXIARCH: 64
-          EXE: ""
-          ENV_VARS_SRC: "{{ .UNIX_ENV_VARS_SRC }}"
-          ENV_VARS_DIGEST: "{{ .UNIX_ENV_VARS_DIGEST }}"
-          ENV_VARS_SIZE: "{{ .UNIX_ENV_VARS_SIZE }}"
-      - task: pixi-package
-        vars:
-          RID: linux-arm64-sc
-          PIXIOS: linux
-          PIXIARCH: aarch64
-          EXE: ""
-          ENV_VARS_SRC: "{{ .UNIX_ENV_VARS_SRC }}"
-          ENV_VARS_DIGEST: "{{ .UNIX_ENV_VARS_DIGEST }}"
-          ENV_VARS_SIZE: "{{ .UNIX_ENV_VARS_SIZE }}"
-      - task: pixi-package
-        vars:
-          RID: darwin-x64-aot
-          PIXIOS: osx
-          PIXIARCH: 64
-          EXE: ""
-          ENV_VARS_SRC: "{{ .UNIX_ENV_VARS_SRC }}"
-          ENV_VARS_DIGEST: "{{ .UNIX_ENV_VARS_DIGEST }}"
-          ENV_VARS_SIZE: "{{ .UNIX_ENV_VARS_SIZE }}"
-      - task: pixi-package
-        vars:
-          RID: darwin-arm64-sc
-          PIXIOS: osx
-          PIXIARCH: arm64
-          EXE: ""
-          ENV_VARS_SRC: "{{ .UNIX_ENV_VARS_SRC }}"
-          ENV_VARS_DIGEST: "{{ .UNIX_ENV_VARS_DIGEST }}"
-          ENV_VARS_SIZE: "{{ .UNIX_ENV_VARS_SIZE }}"
-      - task: pixi-package
-        vars:
-          RID: windows-x64-aot
-          PIXIOS: win
-          PIXIARCH: 64
-          EXE: ".exe"
-          ENV_VARS_SRC: "{{ .WIN_ENV_VARS_SRC }}"
-          ENV_VARS_DIGEST: "{{ .WIN_ENV_VARS_DIGEST }}"
-          ENV_VARS_SIZE: "{{ .WIN_ENV_VARS_SIZE }}"
-      - task: pixi-package
-        vars:
-          RID: windows-arm64-sc
-          PIXIOS: win
-          PIXIARCH: arm64
-          EXE: ".exe"
-          ENV_VARS_SRC: "{{ .WIN_ENV_VARS_SRC }}"
-          ENV_VARS_DIGEST: "{{ .WIN_ENV_VARS_DIGEST }}"
-          ENV_VARS_SIZE: "{{ .WIN_ENV_VARS_SIZE }}"
+      - task: build-conda-packages
+
+  build-conda-packages:
+    internal: true
+    requires:
+      vars:
+        - VERSION
+    cmds:
+      - { task: rattler-build, vars: { OS: linux, ARCH: x64, PROFILE: Aot, PLATFORM: linux-64 } }
+      - { task: rattler-build, vars: { OS: linux, ARCH: arm64, PROFILE: SelfContained, PLATFORM: linux-aarch64 } }
+      - { task: rattler-build, vars: { OS: win, ARCH: x64, PROFILE: Aot, PLATFORM: win-64 } }
+      - { task: rattler-build, vars: { OS: win, ARCH: arm64, PROFILE: SelfContained, PLATFORM: win-arm64 } }
+      - { task: rattler-build, vars: { OS: osx, ARCH: x64, PROFILE: Aot, PLATFORM: osx-64 } }
+      - { task: rattler-build, vars: { OS: osx, ARCH: arm64, PROFILE: Aot, PLATFORM: osx-arm64 } }
+
+  rattler-build:
+    internal: true
+    requires:
+      vars:
+        - OS
+        - ARCH
+        - PROFILE
+        - VERSION
+        - PLATFORM
+    vars:
+      DESCRIPTION:
+        sh: cat ./CHANGELOG.md
+    env:
+      SRC_PATH: "../bin/{{.OS}}-{{.ARCH}}-{{.PROFILE}}"
+      VERSION: "{{.VERSION}}"
+      DESCRIPTION: "{{.DESCRIPTION}}"
+    cmds:
+      - >-
+        rattler-build build
+        -r ./rattler-recipe/recipe.yaml
+        --target-platform {{.PLATFORM}}
+        --test native
+
+  gzip-bins:
+    internal: true
+    cmds:
+      - gzip -k ./bin/linux-x64-Aot/dotnetup
+      - gzip -k ./bin/linux-x64-SelfContained/dotnetup
+      - gzip -k ./bin/linux-arm64-SelfContained/dotnetup
+      - gzip -k ./bin/osx-x64-Aot/dotnetup
+      - gzip -k ./bin/osx-x64-SelfContained/dotnetup
+      - gzip -k ./bin/osx-arm64-Aot/dotnetup
+      - gzip -k ./bin/osx-arm64-SelfContained/dotnetup
+      - gzip -k ./bin/win-x64-Aot/dotnetup.exe
+      - gzip -k ./bin/win-x64-SelfContained/dotnetup.exe
+      - gzip -k ./bin/win-arm64-SelfContained/dotnetup.exe
+
+  stage-gzipped-bins:
+    internal: true
+    cmds:
+      - mv ./bin/linux-x64-Aot/dotnetup.gz ./publish/dotnetup-linux-64-Aot.gz
+      - mv ./bin/linux-x64-SelfContained/dotnetup.gz ./publish/dotnetup-linux-64-SelfContained.gz
+      - mv ./bin/linux-arm64-SelfContained/dotnetup.gz ./publish/dotnetup-linux-aarch64-SelfContained.gz
+      - mv ./bin/osx-x64-Aot/dotnetup.gz ./publish/dotnetup-osx-64-Aot.gz
+      - mv ./bin/osx-x64-SelfContained/dotnetup.gz ./publish/dotnetup-osx-64-SelfContained.gz
+      - mv ./bin/osx-arm64-Aot/dotnetup.gz ./publish/dotnetup-osx-arm64-Aot.gz
+      - mv ./bin/osx-arm64-SelfContained/dotnetup.gz ./publish/dotnetup-osx-arm64-SelfContained.gz
+      - mv ./bin/win-x64-Aot/dotnetup.exe.gz ./publish/dotnetup-win-64-Aot.exe.gz
+      - mv ./bin/win-x64-SelfContained/dotnetup.exe.gz ./publish/dotnetup-win-64-SelfContained.exe.gz
+      - mv ./bin/win-arm64-SelfContained/dotnetup.exe.gz ./publish/dotnetup-win-arm64-SelfContained.exe.gz
+
+  generate-digests:
+    internal: true
+    dir: ./publish
+    cmd: sha256sum * > dotnetup-checksums.txt
 
   publish:
     desc: This is triggered by cog as a post_bump_hook to publish all the final publishable artifacts
@@ -142,116 +134,10 @@ tasks:
       - gh release create v{{ .VERSION }} -F GITHUB_CHANGELOG.md ./publish/*
       - task: pixi-publish
 
-  gzip-bins:
-    cmds:
-      - gzip -k ./bin/linux-x64-aot/dotnetup
-      - gzip -k ./bin/linux-x64-sc/dotnetup
-      - gzip -k ./bin/linux-arm64-sc/dotnetup
-      - gzip -k ./bin/darwin-x64-aot/dotnetup
-      - gzip -k ./bin/darwin-x64-sc/dotnetup
-      - gzip -k ./bin/darwin-arm64-sc/dotnetup
-      - gzip -k ./bin/windows-x64-aot/dotnetup.exe
-      - gzip -k ./bin/windows-x64-sc/dotnetup.exe
-      - gzip -k ./bin/windows-arm64-sc/dotnetup.exe
-
-  stage-gzipped-bins:
-    cmds:
-      - mv ./bin/linux-x64-aot/dotnetup.gz ./publish/dotnetup-linux-x64-aot.gz
-      - mv ./bin/linux-x64-sc/dotnetup.gz ./publish/dotnetup-linux-x64-sc.gz
-      - mv ./bin/linux-arm64-sc/dotnetup.gz ./publish/dotnetup-linux-arm64-sc.gz
-      - mv ./bin/darwin-x64-aot/dotnetup.gz ./publish/dotnetup-darwin-x64-aot.gz
-      - mv ./bin/darwin-x64-sc/dotnetup.gz ./publish/dotnetup-darwin-x64-sc.gz
-      - mv ./bin/darwin-arm64-sc/dotnetup.gz ./publish/dotnetup-darwin-arm64-sc.gz
-      - mv ./bin/windows-x64-aot/dotnetup.exe.gz ./publish/dotnetup-windows-x64-aot.exe.gz
-      - mv ./bin/windows-x64-sc/dotnetup.exe.gz ./publish/dotnetup-windows-x64-sc.exe.gz
-      - mv ./bin/windows-arm64-sc/dotnetup.exe.gz ./publish/dotnetup-windows-arm64-sc.exe.gz
-
-  generate-digests:
-    dir: ./publish
-    cmd: sha256sum * > dotnetup-checksums.txt
-
-  pixi-package:
-    vars:
-      BUILD_NUM: 0
-      HASH:
-        sh: echo "{{ .RID }}" >/dev/null && tr -dc A-Za-z0-9 </dev/urandom | head -c 8; echo
-      PATH_SHA256:
-        sh: sha256sum -b ./bin/{{ .RID }}/dotnetup{{ .EXE }} | awk '{ print $1 }'
-      PATH_SIZE:
-        sh: stat --printf="%s" ./bin/{{ .RID }}/dotnetup{{ .EXE }}
-      PKG_FILE_NAME: dotnetup-{{ .VERSION }}-{{ .HASH }}_{{ .BUILD_NUM }}.tar.bz2
-      INDEX_JSON: |
-        {
-          "name": "dotnetup",
-          "version": "{{ .VERSION }}",
-          "build": "{{ .HASH }}_{{ .BUILD_NUM }}",
-          "build_number": {{ .BUILD_NUM }},
-          "platform": "{{ .PIXIOS }}",
-          "arch": "{{ .PIXIARCH }}",
-          "subdir": "{{ .PIXIOS }}-{{ .PIXIARCH }}",
-          "timestamp": {{ now | unixEpoch }}
-        }
-      DESCRIPTION_TXT:
-        sh: cat ./CHANGELOG.md
-      ABOUT_JSON: |
-        {
-          "home": "https://github.com/brad-jones/dotnetup",
-          "dev_url": "https://github.com/brad-jones/dotnetup",
-          "doc_url": "https://github.com/brad-jones/dotnetup",
-          "license_url": "https://github.com/brad-jones/dotnetup/blob/master/LICENSE",
-          "license": "MIT",
-          "summary": "dotnet sdk version manager (ala: rustup)",
-          "description": {{ toJson .DESCRIPTION_TXT }}
-        }
-      PATHS_JSON: |
-        {
-          "paths_version": 1,
-          "paths": [
-            {
-              "_path": "bin/dotnetup{{ .EXE }}",
-              "path_type": "hardlink",
-              "sha256": "{{ .PATH_SHA256 }}",
-              "size_in_bytes": {{ .PATH_SIZE }}
-            },
-            {
-              "_path": "etc/conda/env_vars.d/dotnetup.json",
-              "path_type": "hardlink",
-              "sha256": "{{ .ENV_VARS_DIGEST }}",
-              "size_in_bytes": {{ .ENV_VARS_SIZE }}
-            }
-          ]
-        }
-    cmds:
-      - echo "::group::pixi-package-{{ .RID }}"
-      - mkdir -p ./pixi/{{ .RID }}
-      - mkdir -p ./pixi/{{ .RID }}/bin
-      - mkdir -p ./pixi/{{ .RID }}/info
-      - mkdir -p ./pixi/{{ .RID }}/etc/conda/env_vars.d
-      - echo '{{ .INDEX_JSON }}' > ./pixi/{{ .RID }}/info/index.json
-      - echo '{{ .ABOUT_JSON }}' > ./pixi/{{ .RID }}/info/about.json
-      - echo '{{ .PATHS_JSON }}' > ./pixi/{{ .RID }}/info/paths.json
-      - cp ./{{ .ENV_VARS_SRC }}.json ./pixi/{{ .RID }}/etc/conda/env_vars.d/dotnetup.json
-      - cp ./bin/{{ .RID }}/dotnetup{{ .EXE }} ./pixi/{{ .RID }}/bin/
-      - '[ -f "./pixi/{{ .RID }}/bin/dotnetup" ] && chmod +x ./pixi/{{ .RID }}/bin/dotnetup || true'
-      # see: https://stackoverflow.com/a/39530409
-      - |
-        find ./pixi/{{ .RID }}/ -printf "%P\n" | \
-        tar -cjvf ./pixi/{{ .PKG_FILE_NAME }} --no-recursion -C ./pixi/{{ .RID }}/ -T -
-      - echo "::endgroup::"
-
   pixi-publish:
-    vars:
-      PKGS:
-        sh: find ./pixi/*.tar.bz2 -exec echo {} +
+    internal: true
+    sources:
+      - output/**/*.conda
     cmds:
-      - for: { var: PKGS }
-        cmd: |
-          echo "::group::pixi-publish-{{ .ITEM }}"
-          curl \
-            --data-binary @{{ .ITEM }} \
-            -H "Authorization: Bearer {{ .PREFIX_DEV_TOKEN }}" \
-            -H "X-File-Name: $(basename "{{ .ITEM }}")" \
-            -H "X-File-SHA256: $(sha256sum -b {{ .ITEM }} | awk '{ print $1 }')" \
-            -H "Content-Type: application/octet-stream" \
-            https://prefix.dev/api/v1/upload/brads-forge
-          echo "::endgroup::"
+      - for: sources
+        cmd: rattler-build upload prefix -c brads-forge {{.ITEM}}
