@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.4.0](https://github.com/brad-jones/dotnetup/compare/a6a6ebfe74852f1cbd58c61831b9096bd5fda286..v0.4.0) - 2024-12-16
+#### Features
+- **(attestations)** all artifacts are now attested - ([a6a6ebf](https://github.com/brad-jones/dotnetup/commit/a6a6ebfe74852f1cbd58c61831b9096bd5fda286)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.3.0](https://github.com/brad-jones/dotnetup/compare/d976bbc0d630a7e87269e4cd9669d67fce7f5d09..v0.3.0) - 2024-12-16
 #### Features
 - updated to dotnet 9 plus many other improvements - ([d976bbc](https://github.com/brad-jones/dotnetup/commit/d976bbc0d630a7e87269e4cd9669d67fce7f5d09)) - [@brad-jones](https://github.com/brad-jones)
