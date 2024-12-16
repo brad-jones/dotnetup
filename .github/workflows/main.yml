@@ -63,6 +63,7 @@ jobs:
       id-token: write
       contents: write
       packages: write
+      attestations: write
     steps:
       - name: ⬇️ Git Checkout
         uses: actions/checkout@v4
@@ -81,3 +82,11 @@ jobs:
         run: cog bump --auto
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🔑 Upload Attestations
+        uses: actions/attest-build-provenance@v1
+        if: ${{ hashFiles('./publish/**/*') != '' }}
+        with:
+          subject-path: |
+            ./publish/**/*
+            ./output/**/*.conda
