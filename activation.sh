@@ -1,7 +1,6 @@
 #!/bin/sh
 
 if [ -z "${CI+x}" ]; then
-  export LD_LIBRARY_PATH="${CONDA_PREFIX}/lib"
   export DOTNET_ROOT="${CONDA_PREFIX}/lib/dotnet"
   export DOTNET_TOOLS="${DOTNET_ROOT}/tools"
   export DOTNET_TOOLS_PATH="${DOTNET_TOOLS}",
