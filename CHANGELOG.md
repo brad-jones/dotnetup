@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.4.1](https://github.com/brad-jones/dotnetup/compare/48ffe0b3cf1a258eb7fae5e1a58f8e05bbb86b92..v0.4.1) - 2025-09-22
+#### Bug Fixes
+- **(pixi)** go back to previous activation.sh script - ([606db1b](https://github.com/brad-jones/dotnetup/commit/606db1b86fa3528b4891650e1895abfc25fb6700)) - [@brad-jones](https://github.com/brad-jones)
+- **(recipe)** remove LD_LIBRARY_PATH env var - ([cbf13ed](https://github.com/brad-jones/dotnetup/commit/cbf13edd8c07dc7492beebe923c6e17a037dbd09)) - [@brad-jones](https://github.com/brad-jones)
+#### Miscellaneous Chores
+- **(bump)** package versions - ([48ffe0b](https://github.com/brad-jones/dotnetup/commit/48ffe0b3cf1a258eb7fae5e1a58f8e05bbb86b92)) - [@brad-jones](https://github.com/brad-jones)
+- **(linting)** update formatters - ([fabc84a](https://github.com/brad-jones/dotnetup/commit/fabc84a64b3a951fce7676ac8bc22ca14b140e1b)) - [@brad-jones](https://github.com/brad-jones)
+#### Style
+- fixes to formatters and resulting formatting changes - ([9d23084](https://github.com/brad-jones/dotnetup/commit/9d2308439044bd5e171a27037589c1a2e84a4f8e)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.4.0](https://github.com/brad-jones/dotnetup/compare/a6a6ebfe74852f1cbd58c61831b9096bd5fda286..v0.4.0) - 2024-12-16
 #### Features
 - **(attestations)** all artifacts are now attested - ([a6a6ebf](https://github.com/brad-jones/dotnetup/commit/a6a6ebfe74852f1cbd58c61831b9096bd5fda286)) - [@brad-jones](https://github.com/brad-jones)
