@@ -18,7 +18,7 @@
         ]
       },
       {
-        "command": "dotnet csharpier --fast",
+        "command": "dotnet csharpier format",
         "exts": [
           "cs"
         ]
