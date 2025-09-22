@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⬇️ Git Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -34,7 +34,7 @@ jobs:
           - { runner: macos-14, os: osx, arch: arm64, profile: "SelfContained" }
     steps:
       - name: ⬇️ Git Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
@@ -66,12 +66,12 @@ jobs:
       attestations: write
     steps:
       - name: ⬇️ Git Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: ⏬ Download binaries
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           path: ./bin
 
@@ -84,7 +84,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🔑 Upload Attestations
-        uses: actions/attest-build-provenance@v1
+        uses: actions/attest-build-provenance@v3
         if: ${{ hashFiles('./publish/**/*') != '' }}
         with:
           subject-path: |
