@@ -7,8 +7,8 @@ namespace dotnetup.Services.Releases.DTOs;
 [JsonSerializable(typeof(ReleaseNoteSdk))]
 [JsonSerializable(typeof(ReleaseNoteSdkFile))]
 [JsonSourceGenerationOptions(
-    WriteIndented = true,
-    PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
-    GenerationMode = JsonSourceGenerationMode.Metadata
+  WriteIndented = true,
+  PropertyNamingPolicy = JsonKnownNamingPolicy.CamelCase,
+  GenerationMode = JsonSourceGenerationMode.Metadata
 )]
 internal partial class SrcGenCtx : JsonSerializerContext { }

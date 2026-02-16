@@ -40,12 +40,12 @@ tasks:
         sh: deno run -qA ./.tasks/next-version.ts
     cmds:
       - >-
-          dotnet publish ./src/dotnetup.csproj
-          -c Release
-          -o ./bin
-          -a {{.DOTNET_ARCH}}
-          -p:PublishProfile={{.PUBLISH_PROFILE}}
-          -p:Version={{.NEXT_VERSION}}
+        dotnet publish ./src/dotnetup.csproj
+        -c Release
+        -o ./bin
+        -a {{.DOTNET_ARCH}}
+        -p:PublishProfile={{.PUBLISH_PROFILE}}
+        -p:Version={{.NEXT_VERSION}}
       - rm -rf ./bin/dotnetup.dbg ./bin/dotnetup.dSYM ./bin/dotnetup.pdb || true
 
   package:
@@ -88,10 +88,10 @@ tasks:
       DESCRIPTION: "{{.DESCRIPTION}}"
     cmds:
       - >-
-          rattler-build build
-          -r ./rattler-recipe/recipe.yaml
-          --target-platform {{.PLATFORM}}
-          --test native
+        rattler-build build
+        -r ./rattler-recipe/recipe.yaml
+        --target-platform {{.PLATFORM}}
+        --test native
 
   gzip-bins:
     internal: true

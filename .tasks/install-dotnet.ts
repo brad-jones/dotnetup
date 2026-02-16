@@ -1,9 +1,9 @@
 import ky from "ky";
-import { z } from "zod";
+import { z } from "@zod/zod";
 import { $ } from "@david/dax";
 import { ensureDir } from "@std/fs";
 
-const MAJOR_VERSION = "9.0";
+const MAJOR_VERSION = "10.0";
 
 if (await $.commandExists("dotnet")) {
   console.log(`dotnet already installed`);

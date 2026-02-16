@@ -3,11 +3,27 @@
   "newLineKind": "lf",
   "useTabs": false,
   "toml": {},
-  "json": {},
-  "yaml": {},
-  "markdown": {},
+  "json": {
+    "ignoreNodeCommentText": "dprint-ignore"
+  },
+  "yaml": {
+    "ignoreCommentDirective": "dprint-ignore"
+  },
+  "markdown": {
+    "ignoreDirective": "dprint-ignore",
+    "ignoreFileDirective": "dprint-ignore-file",
+    "ignoreStartDirective": "dprint-ignore-start",
+    "ignoreEndDirective": "dprint-ignore-end"
+  },
+  "csharpier": {
+    "indentSize": 2,
+    "printWidth": 120
+  },
   "typescript": {
-    "deno": true
+    "deno": true,
+    "lineWidth": 120,
+    "ignoreFileCommentText": "dprint-ignore-file",
+    "ignoreNodeCommentText": "dprint-ignore"
   },
   "exec": {
     "commands": [
@@ -15,12 +31,6 @@
         "command": "shfmt -i 2",
         "exts": [
           "sh"
-        ]
-      },
-      {
-        "command": "dotnet csharpier format",
-        "exts": [
-          "cs"
         ]
       }
     ]
@@ -36,10 +46,12 @@
   ],
   "plugins": [
     "https://plugins.dprint.dev/toml-0.7.0.wasm",
-    "https://plugins.dprint.dev/json-0.20.0.wasm",
-    "https://plugins.dprint.dev/markdown-0.19.0.wasm",
-    "https://plugins.dprint.dev/typescript-0.95.11.wasm",
-    "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.5.1.wasm",
-    "https://plugins.dprint.dev/exec-0.6.0.json@a054130d458f124f9b5c91484833828950723a5af3f8ff2bd1523bd47b83b364"
+    "https://plugins.dprint.dev/typescript-0.95.15.wasm",
+    "https://plugins.dprint.dev/json-0.21.1.wasm",
+    "https://plugins.dprint.dev/markdown-0.21.1.wasm",
+    "https://plugins.dprint.dev/dockerfile-0.3.3.wasm",
+    "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.6.0.wasm",
+    "https://plugins.dprint.dev/exec-0.6.0.json@a054130d458f124f9b5c91484833828950723a5af3f8ff2bd1523bd47b83b364",
+    "https://plugins.dprint.dev/Phault/csharpier-0.2.2.json@7ee18eb6f024b77dbba765af61bc5024fc699814797f909715820fd8eeab4ca5"
   ]
 }

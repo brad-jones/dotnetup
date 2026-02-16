@@ -2,43 +2,51 @@ namespace System.CommandLine;
 
 public static class CommandExtensions
 {
-    public static Argument<T> Arg<T>(
-        this Command cmd,
-        string name,
-        string desc,
-        object? defaultValue = null,
-        Func<object>? defaultValueFactory = null
-    )
+  public static Argument<T> Arg<T>(
+    this Command cmd,
+    string name,
+    string desc,
+    T? defaultValue = default,
+    Func<T>? defaultValueFactory = null
+  )
+  {
+    var arg = new Argument<T>(name) { Description = desc };
+
+    if (defaultValue is not null)
     {
-        var arg = new Argument<T>(name, desc);
-
-        if (defaultValue != null)
-            arg.SetDefaultValue(defaultValue);
-
-        if (defaultValueFactory != null)
-            arg.SetDefaultValueFactory(defaultValueFactory);
-
-        cmd.AddArgument(arg);
-        return arg;
+      arg.DefaultValueFactory = _ => defaultValue;
     }
 
-    public static Option<T> Opt<T>(
-        this Command cmd,
-        string name,
-        string desc,
-        object? defaultValue = null,
-        Func<object>? defaultValueFactory = null
-    )
+    if (defaultValueFactory != null)
     {
-        var opt = new Option<T>(name, desc);
-
-        if (defaultValue != null)
-            opt.SetDefaultValue(defaultValue);
-
-        if (defaultValueFactory != null)
-            opt.SetDefaultValueFactory(defaultValueFactory);
-
-        cmd.AddOption(opt);
-        return opt;
+      arg.DefaultValueFactory = _ => defaultValueFactory();
     }
+
+    cmd.Arguments.Add(arg);
+    return arg;
+  }
+
+  public static Option<T> Opt<T>(
+    this Command cmd,
+    string name,
+    string desc,
+    T? defaultValue = default,
+    Func<T>? defaultValueFactory = null
+  )
+  {
+    var opt = new Option<T>(name) { Description = desc };
+
+    if (defaultValue is not null)
+    {
+      opt.DefaultValueFactory = _ => defaultValue;
+    }
+
+    if (defaultValueFactory != null)
+    {
+      opt.DefaultValueFactory = _ => defaultValueFactory();
+    }
+
+    cmd.Options.Add(opt);
+    return opt;
+  }
 }

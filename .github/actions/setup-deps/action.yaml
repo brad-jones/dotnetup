@@ -4,14 +4,14 @@ runs:
   using: "composite"
   steps:
     - name: Install dotnet
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         global-json-file: ./global.json
 
     - name: Install pixi env
-      uses: prefix-dev/setup-pixi@v0.9.0
+      uses: prefix-dev/setup-pixi@v0.9.4
       with:
-        pixi-version: v0.55.0
+        pixi-version: v0.63.2
         activate-environment: true
 
     - name: Install dotnet tools

@@ -25,7 +25,10 @@
     "editor.defaultFormatter": "dprint.dprint"
   },
   "[csharp]": {
-    "editor.defaultFormatter": "csharpier.csharpier-vscode"
+    "editor.defaultFormatter": "dprint.dprint"
+  },
+  "[github-actions-workflow]": {
+    "editor.defaultFormatter": "dprint.dprint"
   },
   "files.associations": {
     "*.gitmsgtpl": "git-commit"
@@ -33,7 +36,7 @@
   "evenBetterToml.schema.associations": {
     "cog.toml": "https://docs.cocogitto.io/cog-schema.json"
   },
-  "emojisense.languages": {
+  "json.schemaDownload.trustedDomains": {
     "*": true
   }
 }

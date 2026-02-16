@@ -1,4 +1,4 @@
-# spec: https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md
+# docs: https://lefthook.dev/configuration/
 
 pre-commit:
   commands:
@@ -18,9 +18,8 @@ commit-msg:
   commands:
     lint:
       run: cog verify -f {1}
-#pre-push:
-#  commands:
-#    lint:
-#      run: task lint
-#    test:
-#      run: task test
+
+pre-push:
+  commands:
+    lint:
+      run: task lint
