@@ -16,7 +16,7 @@ jobs:
         run: task lint
 
   build:
-    name: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.profile }}
+    name: build-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.profile }}
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -56,7 +56,7 @@ jobs:
 
   test:
     needs: build
-    name: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.profile }}
+    name: test-${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.profile }}
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -76,6 +76,7 @@ jobs:
       - name: ⬇️ Download binaries
         uses: actions/download-artifact@v7
         with:
+          name: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.profile }}
           path: ./bin
 
       - run: ls -hal ./bin
