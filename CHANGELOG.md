@@ -2,6 +2,26 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.5.0](https://github.com/brad-jones/dotnetup/compare/26237ee51a823ac422f72d2bf6075526bbcd1213..v0.5.0) - 2026-02-17
+#### Features
+- updated all the deps and fixed a window path bug - ([26237ee](https://github.com/brad-jones/dotnetup/commit/26237ee51a823ac422f72d2bf6075526bbcd1213)) - [@brad-jones](https://github.com/brad-jones)
+#### Bug Fixes
+- (**LinkResolver**) cater for a windows edge case in the Realpath method - ([40d80eb](https://github.com/brad-jones/dotnetup/commit/40d80ebda37752da1dc52d1aafd5e66e6d10380c)) - [@brad-jones](https://github.com/brad-jones)
+- rattler recipe, must have been some subtle changes between rattler versions - ([a780fbc](https://github.com/brad-jones/dotnetup/commit/a780fbc18f1a52f8d4aa87d9a835a4d836eccc68)) - [@brad-jones](https://github.com/brad-jones)
+#### Build system
+- rattler is smart enough to append the exe suffix for us it seems - ([d8a2d36](https://github.com/brad-jones/dotnetup/commit/d8a2d3657d11b441ca143634b400e342033968d5)) - [@brad-jones](https://github.com/brad-jones)
+#### Continuous Integration
+- add back fetch-depth for the build steps - ([4441d7e](https://github.com/brad-jones/dotnetup/commit/4441d7e8c311951f5ac3ee22c99a16ad166e8be0)) - [@brad-jones](https://github.com/brad-jones)
+- re-enable publish step - ([dc62e61](https://github.com/brad-jones/dotnetup/commit/dc62e61f5df93bc00dc19e5b349807cc3d43e0d9)) - [@brad-jones](https://github.com/brad-jones)
+- remove arm64 tests as we have no easy way to run those binaries - ([eaae7ad](https://github.com/brad-jones/dotnetup/commit/eaae7ad45d3150045656e8eb9ecc8bfd5cd2e5e1)) - [@brad-jones](https://github.com/brad-jones)
+- actually run dotnetup install now - ([2677b00](https://github.com/brad-jones/dotnetup/commit/2677b0052c9055caa3efc6aa9bfc21cb8991b0fb)) - [@brad-jones](https://github.com/brad-jones)
+- only download the bin we need to test - ([be24e2d](https://github.com/brad-jones/dotnetup/commit/be24e2d507d0abbed7da4f6ccf5d9f533f505a60)) - [@brad-jones](https://github.com/brad-jones)
+#### Miscellaneous Chores
+- debug why this recipe is now failing on windows - ([e6b7b3d](https://github.com/brad-jones/dotnetup/commit/e6b7b3db5d8f777428d0593b7c9e7ba5ea1ddae7)) - [@brad-jones](https://github.com/brad-jones)
+- debug recipe failure - ([b8436a9](https://github.com/brad-jones/dotnetup/commit/b8436a942a3fdb929a982de23c910c6666df2c44)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.4.1](https://github.com/brad-jones/dotnetup/compare/48ffe0b3cf1a258eb7fae5e1a58f8e05bbb86b92..v0.4.1) - 2025-09-22
 #### Bug Fixes
 - **(pixi)** go back to previous activation.sh script - ([606db1b](https://github.com/brad-jones/dotnetup/commit/606db1b86fa3528b4891650e1895abfc25fb6700)) - [@brad-jones](https://github.com/brad-jones)
