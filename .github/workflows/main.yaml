@@ -106,15 +106,15 @@ jobs:
       - name: ⚙️ Setup Build Deps
         uses: ./.github/actions/setup-deps
 
-      #- name: 🚀 Publish Release
-      #  run: cog bump --auto
-      #  env:
-      #    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: 🚀 Publish Release
+        run: cog bump --auto
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      #- name: 🔑 Upload Attestations
-      #  uses: actions/attest-build-provenance@v3
-      #  if: ${{ hashFiles('./publish/**/*') != '' }}
-      #  with:
-      #    subject-path: |
-      #      ./publish/**/*
-      #      ./output/**/*.conda
+      - name: 🔑 Upload Attestations
+        uses: actions/attest-build-provenance@v3
+        if: ${{ hashFiles('./publish/**/*') != '' }}
+        with:
+          subject-path: |
+            ./publish/**/*
+            ./output/**/*.conda
