@@ -64,10 +64,8 @@ jobs:
         include:
           - { runner: ubuntu-latest, os: linux, arch: x64, profile: "Aot" }
           - { runner: ubuntu-latest, os: linux, arch: x64, profile: "SelfContained" }
-          - { runner: ubuntu-latest, os: linux, arch: arm64, profile: "SelfContained" }
           - { runner: windows-latest, os: win, arch: x64, profile: "Aot" }
           - { runner: windows-latest, os: win, arch: x64, profile: "SelfContained" }
-          - { runner: windows-latest, os: win, arch: arm64, profile: "SelfContained" }
           - { runner: macos-latest, os: osx, arch: arm64, profile: "Aot" }
           - { runner: macos-latest, os: osx, arch: arm64, profile: "SelfContained" }
           - { runner: macos-15-intel, os: osx, arch: x64, profile: "Aot" }
@@ -79,17 +77,11 @@ jobs:
           name: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.profile }}
           path: ./bin
 
-      - if: ${{ matrix.os != 'windows' }}
+      - if: ${{ matrix.os != 'win' }}
         run: chmod +x ./bin/dotnetup
         shell: bash
 
       - run: ./bin/dotnetup install
-        shell: bash
-
-      - run: which dotnet
-        shell: bash
-
-      - run: exit 1
         shell: bash
 
   publish:
