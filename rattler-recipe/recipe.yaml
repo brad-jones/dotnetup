@@ -48,4 +48,6 @@ build:
       then: cp $RECIPE_DIR/env-osx.json $PREFIX/etc/conda/env_vars.d/dotnetup.json
 
 tests:
-  - script: test "$(dotnetup --version | cut -d "+" -f 1)" = "${{ version }}"
+  - script: |
+      dotnetup --version
+      test "$(dotnetup --version | cut -d "+" -f 1)" = "${{ version }}"
