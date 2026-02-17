@@ -35,6 +35,10 @@ jobs:
     steps:
       - name: ⬇️ Git Checkout
         uses: actions/checkout@v6
+        with:
+          # NB: We need the full history fso cog can determine
+          # the next version number from git tags
+          fetch-depth: 0
 
       - name: ⚙️ Setup Build Deps
         uses: ./.github/actions/setup-deps
