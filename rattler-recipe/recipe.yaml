@@ -16,6 +16,7 @@ about:
 
 source:
   path: ${{ env.get("SRC_PATH") }}
+  file_name: dotnetup
 
 requirements:
   run:
@@ -37,7 +38,7 @@ build:
     - mkdir -p $PREFIX/bin
     - mkdir -p $PREFIX/etc/conda/env_vars.d
     - if: win
-      then: cp ./dotnetup.exe $PREFIX/bin/dotnetup.exe
+      then: cp ./dotnetup $PREFIX/bin/dotnetup.exe
       else: cp ./dotnetup $PREFIX/bin/dotnetup && chmod +x $PREFIX/bin/dotnetup
     - if: win
       then: cp $RECIPE_DIR/env-win.json $PREFIX/etc/conda/env_vars.d/dotnetup.json
