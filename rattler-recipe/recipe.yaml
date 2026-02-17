@@ -35,6 +35,7 @@ build:
   dynamic_linking:
     binary_relocation: false
   script:
+    - ls -hal .
     - mkdir -p $PREFIX/bin
     - mkdir -p $PREFIX/etc/conda/env_vars.d
     - if: win
