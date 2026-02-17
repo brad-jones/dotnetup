@@ -35,11 +35,10 @@ build:
   dynamic_linking:
     binary_relocation: false
   script:
-    - ls -hal .
     - mkdir -p $PREFIX/bin
     - mkdir -p $PREFIX/etc/conda/env_vars.d
     - if: win
-      then: cp ./dotnetup $PREFIX/bin/dotnetup.exe
+      then: cp ./dotnetup.exe $PREFIX/bin/dotnetup.exe
       else: cp ./dotnetup $PREFIX/bin/dotnetup && chmod +x $PREFIX/bin/dotnetup
     - if: win
       then: cp $RECIPE_DIR/env-win.json $PREFIX/etc/conda/env_vars.d/dotnetup.json

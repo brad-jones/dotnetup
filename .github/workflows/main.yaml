@@ -110,9 +110,6 @@ jobs:
       - name: ⚙️ Setup Build Deps
         uses: ./.github/actions/setup-deps
 
-      - run: which rattler-build
-      - run: rattler-build --version
-
       - name: 🚀 Publish Release
         run: cog bump --auto
         env:
