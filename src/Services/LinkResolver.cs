@@ -13,12 +13,34 @@ public static class LinkResolver
       return path;
 
     var origPath = Path.GetFullPath(path);
-    var realpath = Path.GetPathRoot(origPath)!;
-    var segments = origPath.Replace("\\", "/").Split("/").Where(_ => !string.IsNullOrEmpty(_)).ToArray();
+
+    // Start from the root ("/" on unix, "C:\" on windows, "\\server\share\" on UNC)
+    var root = Path.GetPathRoot(origPath);
+    if (string.IsNullOrEmpty(root))
+      return origPath;
+
+    var realpath = root;
+
+    // Work with the remainder of the path *after* the root
+    var remainder = origPath[root.Length..];
+
+    // Split remainder into segments (no drive letter here)
+    var segments = remainder.Split(
+      [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar],
+      StringSplitOptions.RemoveEmptyEntries
+    );
 
     foreach (var segment in segments)
     {
       var recombined = Path.Combine(realpath, segment);
+
+      // Double check the path exists before trying to resolve it,
+      // if it doesn't exist just keep going with the recombined path
+      if (!Path.Exists(recombined))
+      {
+        realpath = recombined;
+        continue;
+      }
 
       if (File.GetAttributes(recombined).HasFlag(FileAttributes.Directory))
       {
