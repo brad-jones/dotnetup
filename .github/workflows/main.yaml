@@ -79,10 +79,17 @@ jobs:
           name: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.profile }}
           path: ./bin
 
-      - run: ls -hal ./bin
+      - if: ${{ matrix.os != 'windows' }}
+        run: chmod +x ./bin/dotnetup
         shell: bash
 
-      - run: ./bin/dotnetup --version
+      - run: ./bin/dotnetup install
+        shell: bash
+
+      - run: which dotnet
+        shell: bash
+
+      - run: exit 1
         shell: bash
 
   publish:
