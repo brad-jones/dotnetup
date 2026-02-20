@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.5.2](https://github.com/brad-jones/dotnetup/compare/c4991e5e866dd45cd12e3ef3d11719a13fef1d20..v0.5.2) - 2026-02-20
+#### Bug Fixes
+- add dotnet tools to PATH - ([c4991e5](https://github.com/brad-jones/dotnetup/commit/c4991e5e866dd45cd12e3ef3d11719a13fef1d20)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.5.1](https://github.com/brad-jones/dotnetup/compare/3138ece5205b0bd386a764ffd4fedc7cb7afb5f7..v0.5.1) - 2026-02-20
 #### Bug Fixes
 - forgot to create the activate.d dir - ([0dcd0ad](https://github.com/brad-jones/dotnetup/commit/0dcd0ad83f48f77aafa2f55ebf0df7e88c25f01d)) - [@brad-jones](https://github.com/brad-jones)
