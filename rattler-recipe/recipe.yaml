@@ -42,10 +42,13 @@ build:
       else: cp ./dotnetup $PREFIX/bin/dotnetup && chmod +x $PREFIX/bin/dotnetup
     - if: win
       then: cp $RECIPE_DIR/env-win.json $PREFIX/etc/conda/env_vars.d/dotnetup.json
-    - if: linux
-      then: cp $RECIPE_DIR/env-linux.json $PREFIX/etc/conda/env_vars.d/dotnetup.json
-    - if: osx
-      then: cp $RECIPE_DIR/env-osx.json $PREFIX/etc/conda/env_vars.d/dotnetup.json
+      else: cp $RECIPE_DIR/env-unix.json $PREFIX/etc/conda/env_vars.d/dotnetup.json
+    - if: win
+      then: cp $RECIPE_DIR/activation.bat $PREFIX/etc/conda/activate.d/dotnetup.bat
+    - if: win
+      then: cp $RECIPE_DIR/activation.ps1 $PREFIX/etc/conda/activate.d/dotnetup.ps1
+    - if: unix
+      then: cp $RECIPE_DIR/activation.sh $PREFIX/etc/conda/activate.d/dotnetup.sh
 
 tests:
   - script: test "$(dotnetup --version | cut -d "+" -f 1)" = "${{ version }}"

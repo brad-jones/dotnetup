@@ -1,0 +1,1 @@
+@SET "PATH=%DOTNET_ROOT%;%PATH%"

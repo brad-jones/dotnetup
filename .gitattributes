@@ -2,3 +2,7 @@
 
 # SCM syntax highlighting
 pixi.lock linguist-language=YAML linguist-generated=true
+
+# Make sure the windows activation scripts get windows line endings
+*.bat text eol=crlf
+*.ps1 text eol=crlf

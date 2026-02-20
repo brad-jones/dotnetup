@@ -1,0 +1,1 @@
+export PATH="${DOTNET_ROOT}:$PATH"
