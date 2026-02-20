@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.5.1](https://github.com/brad-jones/dotnetup/compare/3138ece5205b0bd386a764ffd4fedc7cb7afb5f7..v0.5.1) - 2026-02-20
+#### Bug Fixes
+- forgot to create the activate.d dir - ([0dcd0ad](https://github.com/brad-jones/dotnetup/commit/0dcd0ad83f48f77aafa2f55ebf0df7e88c25f01d)) - [@brad-jones](https://github.com/brad-jones)
+- prepend PATH in activation script instead of the json env files - ([3138ece](https://github.com/brad-jones/dotnetup/commit/3138ece5205b0bd386a764ffd4fedc7cb7afb5f7)) - [@brad-jones](https://github.com/brad-jones)
+
+- - -
+
 ## [v0.5.0](https://github.com/brad-jones/dotnetup/compare/26237ee51a823ac422f72d2bf6075526bbcd1213..v0.5.0) - 2026-02-17
 #### Features
 - updated all the deps and fixed a window path bug - ([26237ee](https://github.com/brad-jones/dotnetup/commit/26237ee51a823ac422f72d2bf6075526bbcd1213)) - [@brad-jones](https://github.com/brad-jones)
