@@ -116,7 +116,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 🔑 Upload Attestations
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         if: ${{ hashFiles('./publish/**/*') != '' }}
         with:
           subject-path: |
