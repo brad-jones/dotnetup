@@ -76,7 +76,7 @@ jobs:
           - { runner: macos-15-intel, os: osx, arch: x64, profile: "SelfContained" }
     steps:
       - name: ⬇️ Download binaries
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.profile }}
           path: ./bin
@@ -103,7 +103,7 @@ jobs:
           fetch-depth: 0
 
       - name: ⏬ Download binaries
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           path: ./bin
 
