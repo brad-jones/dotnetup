@@ -50,7 +50,7 @@ jobs:
         run: task build
 
       - name: ⬆️ Upload binaries
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.os }}-${{ matrix.arch }}-${{ matrix.profile }}
           path: bin/**/*
